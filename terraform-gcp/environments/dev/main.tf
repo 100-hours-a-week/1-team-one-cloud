@@ -30,7 +30,7 @@ module "storage" {
 
   project_id    = var.project_id
   location      = var.region
-  bucket_name   = "${var.project_id}-images-dev" # 이름 충돌 방지를 위해 프로젝트ID 포함
+  bucket_name   = "raise-developer-bucket"
   cors_origins  = var.cors_origins
   storage_class = var.storage_class
 }

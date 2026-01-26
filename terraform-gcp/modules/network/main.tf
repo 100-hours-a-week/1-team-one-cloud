@@ -16,9 +16,10 @@ resource "google_compute_subnetwork" "subnet" {
 
 # 3. 방화벽 규칙: SSH 허용
 resource "google_compute_firewall" "allow_ssh_public" {
-  name    = "${var.environment}-allow-ssh"
-  network = google_compute_network.vpc.name
-  project = var.project_id
+  description  = "Allow SSH from anywhere"
+  name         = "default-allow-ssh"
+  network      = google_compute_network.vpc.name
+  project      = var.project_id
 
   allow {
     protocol = "tcp"
@@ -33,7 +34,7 @@ resource "google_compute_firewall" "allow_ssh_public" {
 
 # 4. 방화벽 규칙: 웹 트래픽 허용 (HTTP/HTTPS)
 resource "google_compute_firewall" "allow_web" {
-  name    = "${var.environment}-allow-web"
+  name    = "allow-web-public"
   network = google_compute_network.vpc.name
   project = var.project_id
 
