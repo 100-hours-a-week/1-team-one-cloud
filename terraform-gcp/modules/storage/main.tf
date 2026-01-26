@@ -16,8 +16,8 @@ resource "google_storage_bucket" "image_bucket" {
   # CORS 설정 (프론트엔드 직접 업로드를 위해 필수)
   cors {
     origin          = var.cors_origins
-    method          = ["GET", "PUT", "POST", "HEAD", "DELETE"]
-    response_header = ["Content-Type", "Access-Control-Allow-Origin"]
+    method          = ["GET", "PUT", "POST", "DELETE", "OPTIONS"]
+    response_header = ["Content-Type", "Access-Control-Allow-Origin", "x-goog-resumable"]
     max_age_seconds = 3600
   }
 }
@@ -25,7 +25,7 @@ resource "google_storage_bucket" "image_bucket" {
 # 2. 백엔드 서버가 사용할 서비스 계정 (Service Account) 생성
 # (이미 있다면 data source로 가져와서 사용 가능)
 resource "google_service_account" "backend_sa" {
-  account_id   = "backend-api-sa"
+  account_id   = "backend-sa"
   display_name = "Backend API Service Account"
   project      = var.project_id
 }
@@ -37,8 +37,8 @@ resource "google_storage_bucket_iam_member" "bucket_admin" {
   member = "serviceAccount:${google_service_account.backend_sa.email}"
 }
 
-# 4. [핵심] 서비스 계정에 '토큰 생성' 권한 부여 (Signed URL 서명용)
-# 키 파일(JSON) 없이 IAM 인증을 하려면 이 권한이 필수입니다.
+# 4. 서비스 계정에 '토큰 생성' 권한 부여 (Signed URL 서명용)
+# 키 파일(JSON) 없이 IAM 인증을 하려면 이 권한이 필수
 resource "google_project_iam_member" "token_creator" {
   project = var.project_id
   role    = "roles/iam.serviceAccountTokenCreator"

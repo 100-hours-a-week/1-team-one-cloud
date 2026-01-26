@@ -1,32 +1,35 @@
-# Terraform working directory
-.terraform/
+# Local .terraform directories
+**/.terraform/*
 
-# State files 
+# .tfstate files
 *.tfstate
 *.tfstate.*
 
-# Crash logs
+# Crash log files
 crash.log
+crash.*.log
 
-# Override files
+# Exclude all .tfvars files, which are likely to contain sensitive data
+*.tfvars
+*.tfvars.json
+
+# Ignore override files
 override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
 
-# tfvars (민감정보 가능 -> 예시는 *.example로만)
-*.tfvars
-*.tfvars.json
-
-# CLI config files
-.terraformrc
-terraform.rc
-
-# tfplan files
+# Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 **/*tfplan*
 *.tfplan
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
 
 # Editor/OS
 .DS_Store
 .idea/
 .vscode/
+
+terraform-gcp/scripts/import.sh

@@ -1,12 +1,51 @@
-module "network" {
-  source = "../../modules/network"
+# 1. Network 모듈 대신 Data Source 사용 (기존 Default VPC 사용)
+data "google_compute_network" "default" {
+  name = "default"
+}
 
-  # variables.tf에 정의한 변수 주입
-  project_id        = var.project_id
-  region            = var.region
-  environment       = var.environment
-  subnet_cidr       = "10.0.1.0/24"
-  ssh_source_ranges = var.ssh_source_ranges
+data "google_compute_subnetwork" "default" {
+  name   = "default"
+  region = var.region
+}
+
+# 2. 방화벽 규칙 직접 정의 (Default VPC용)
+resource "google_compute_firewall" "allow_ssh" {
+  name    = "default-allow-ssh"
+  network = data.google_compute_network.default.name
+  project = var.project_id
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+  source_ranges = var.ssh_source_ranges
+  target_tags   = ["ssh-enabled"]
+}
+
+resource "google_compute_firewall" "allow_web" {
+  name    = "allow-web-public"
+  network = data.google_compute_network.default.name
+  project = var.project_id
+
+  allow {
+    protocol = "tcp"
+    ports    = ["80", "443"]
+  }
+  source_ranges = ["0.0.0.0/0"]
+  target_tags   = ["web-server"]
+}
+
+resource "google_compute_firewall" "allow_ai_server" {
+  name    = "allow-ai-server"
+  network = data.google_compute_network.default.name
+  project = var.project_id
+
+  allow {
+    protocol = "tcp"
+    ports    = ["8000"]
+  }
+  source_ranges = ["0.0.0.0/0"]
+  target_tags   = ["ai-server"]
 }
 
 module "compute" {
@@ -20,9 +59,10 @@ module "compute" {
   service_account_email = var.service_account_email
   boot_disk_image       = var.boot_disk_image
   boot_disk_type        = var.boot_disk_type
+  tags                  = ["ssh-enabled", "web-server", "ai-server"]
 
-  # Network 모듈에서 생성한 서브넷 정보 전달
-  subnet_self_link = module.network.subnet_self_link
+  # Data Source로 가져온 Default 서브넷 정보 전달
+  subnet_self_link = data.google_compute_subnetwork.default.self_link
 }
 
 module "storage" {
@@ -30,7 +70,7 @@ module "storage" {
 
   project_id    = var.project_id
   location      = var.region
-  bucket_name   = "${var.project_id}-images-dev" # 이름 충돌 방지를 위해 프로젝트ID 포함
+  bucket_name   = "raise-developer-bucket"
   cors_origins  = var.cors_origins
   storage_class = var.storage_class
 }
