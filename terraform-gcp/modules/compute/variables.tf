@@ -52,3 +52,9 @@ variable "tags" {
   type        = list(string)
   default     = ["ssh-enabled", "web-server"]
 }
+
+variable "static_ip" {
+  description = "Static external IP address. If null, ephemeral IP is used."
+  type        = string
+  default     = null
+}

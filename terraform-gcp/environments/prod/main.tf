@@ -1,3 +1,10 @@
+# 고정 IP 예약
+resource "google_compute_address" "static" {
+  name   = "${var.instance_name}-ip"
+  region = var.region
+  project = var.project_id
+}
+
 module "network" {
   source = "../../modules/network"
 
@@ -17,9 +24,10 @@ module "compute" {
   instance_name         = var.instance_name
   machine_type          = var.machine_type
   boot_disk_size        = var.boot_disk_size
-  service_account_email = var.service_account_email
+  service_account_email = module.storage.service_account_email
   boot_disk_image       = var.boot_disk_image
   boot_disk_type        = var.boot_disk_type
+  static_ip             = google_compute_address.static.address
 
   # Network 모듈에서 생성한 서브넷 정보 전달
   subnet_self_link = module.network.subnet_self_link
