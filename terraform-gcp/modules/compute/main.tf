@@ -4,7 +4,7 @@ resource "google_compute_instance" "main" {
   zone         = var.zone
   project      = var.project_id
 
-  tags = ["ssh-enabled", "web-server"]
+  tags = var.tags
 
   boot_disk {
     initialize_params {

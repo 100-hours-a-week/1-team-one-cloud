@@ -46,3 +46,9 @@ variable "boot_disk_type" {
   type        = string
   default     = "pd-balanced"
 }
+
+variable "tags" {
+  description = "Network tags for the instance"
+  type        = list(string)
+  default     = ["ssh-enabled", "web-server"]
+}
