@@ -24,7 +24,7 @@ module "compute" {
   instance_name         = var.instance_name
   machine_type          = var.machine_type
   boot_disk_size        = var.boot_disk_size
-  service_account_email = var.service_account_email
+  service_account_email = module.storage.service_account_email
   boot_disk_image       = var.boot_disk_image
   boot_disk_type        = var.boot_disk_type
   static_ip             = google_compute_address.static.address
