@@ -66,3 +66,20 @@ variable "storage_class" {
   description = "GCS 스토리지 클래스"
   type        = string
 }
+
+# 모니터링 인스턴스 설정
+variable "monitoring_instance_name" {
+  description = "모니터링 VM 인스턴스 이름"
+  type        = string
+}
+
+variable "monitoring_machine_type" {
+  description = "모니터링 머신 타입"
+  type        = string
+}
+
+variable "monitoring_boot_disk_size" {
+  description = "모니터링 부트 디스크 크기 (GB)"
+  type        = number
+  default     = 64
+}
