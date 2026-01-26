@@ -17,6 +17,7 @@ resource "google_compute_instance" "main" {
   network_interface {
     subnetwork = var.subnet_self_link
     access_config {
+      nat_ip = var.static_ip
     }
   }
 
