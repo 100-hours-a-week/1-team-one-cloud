@@ -83,33 +83,3 @@ resource "google_compute_firewall" "allow_monitoring" {
   source_ranges = ["0.0.0.0/0"] 
   target_tags   = ["monitoring-server"]
 }
-
-# 7. 방화벽 규칙: Node Exporter (Prometheus 메트릭 수집용)
-resource "google_compute_firewall" "allow_node_exporter" {
-  name    = "${var.environment}-allow-node-exporter"
-  network = google_compute_network.vpc.name
-  project = var.project_id
-  
-  allow {
-    protocol = "tcp"
-    ports    = ["9100"]
-  }
-  
-  source_ranges = ["136.112.211.167/32"]
-  target_tags   = ["ssh-enabled"]
-}
-
-# 8. 방화벽 규칙: Spring Boot Actuator (Prometheus 메트릭 수집용)
-resource "google_compute_firewall" "allow_spring_actuator" {
-  name    = "${var.environment}-allow-spring-actuator"
-  network = google_compute_network.vpc.name
-  project = var.project_id
-  
-  allow {
-    protocol = "tcp"
-    ports    = ["8080"]
-  }
-  
-  source_ranges = ["136.112.211.167/32"]  
-  target_tags   = ["ssh-enabled"]
-}
