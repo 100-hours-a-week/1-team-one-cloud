@@ -7,7 +7,7 @@ GCP 클라우드 인프라를 Terraform으로 관리하는 IaC(Infrastructure as
 cloud-infra/
 ├── .gitignore
 ├── README.md
-└── terraform/
+└── terraform-gcp/
     ├── environments/         # 환경별 설정
     │   ├── dev/              # 개발 환경
     │   │   ├── main.tf       # 리소스 정의
@@ -17,28 +17,39 @@ cloud-infra/
     │   │   ├── outputs.tf    # 출력 값
     │   │   ├── terraform.tfvars.example  # 변수 값 예시
     │   │   └── .terraform.lock.hcl       # Provider 버전 잠금
-    │   └── prod/             # 운영 환경 (예정)
-    └── modules/              # 재사용 모듈 (예정)
+    │   └── prod/             # 운영 환경
+    │   │   ├── main.tf       # 리소스 정의
+    │   │   ├── variables.tf  # 변수 정의
+    │   │   ├── providers.tf  # Provider 설정
+    │   │   ├── versions.tf   # Terraform/Provider 버전
+    │   │   ├── outputs.tf    # 출력 값
+    │   │   ├── terraform.tfvars.example  # 변수 값 예시
+    │   │   └── .terraform.lock.hcl       # Provider 버전 잠금
+    └── modules/              # 재사용 모듈
+       ├── compute/          # VM 인스턴스 관리
+       ├── network/          # VPC 및 방화벽 관리
+       └── storage/          # GCS 버킷 및 IAM 관리
 ```
 
-## 관리 중인 인프라 (v1.0)
+## 관리 중인 인프라 (v2.0)
 
 ### GCP 리소스
-- **프로젝트**: Raise Developer
-- **리전/존**: `us-central1` / `us-central1-c`
 
 ### 네트워크
-- **VPC**: `default` (자동 모드)
-- **서브넷**: 자동 생성 (각 리전별)
+- **Dev**: `default` VPC 사용 (Data Source)
+- **Prod**: 커스텀 VPC 및 서브넷 구성 (`network` 모듈)
 
 ### Compute
-- **VM 인스턴스**: `raisedeveloper-dev`
-  - 머신 타입: `e2-medium`
-  - OS: Ubuntu 24.04 LTS
-  - 디스크: 32GB (pd-balanced)
+- **Dev**: `raisedeveloper-dev` (e2-medium)
+- **Prod**: `raisedeveloper-prod` (e2-medium), `monitoring-server`
+- **OS**: Ubuntu 24.04 LTS
+
+### Storage
+- **Dev**: `raise-developer-bucket`
+- **Prod**: `raise-developer-prod-bucket`
+- **IAM**: 서비스 계정 자동 생성 및 권한 부여
 
 ### 방화벽
-- `default-allow-ssh` (22)
 - `default-allow-http` (80)
 - `default-allow-https` (443)
 - `allow-web-public` (80, 443)
@@ -137,6 +148,11 @@ terraform destroy
 - ✅ 기존 GCP 인프라를 Terraform으로 Import
 - ✅ Dev 환경 설정 완료
 - ✅ VPC, VM, 방화벽 규칙 코드화
+
+### v2.0 (Current)
+- ✅ 모듈화 적용 (`compute`, `storage`, `network`)
+- ✅ Prod 환경 구성 추가 (Custom VPC 적용)
+- ✅ Cloud Storage 및 IAM 권한 관리 추가
 
 ## 📖 참고 자료
 
