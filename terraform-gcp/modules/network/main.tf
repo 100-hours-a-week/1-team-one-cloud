@@ -77,7 +77,7 @@ resource "google_compute_firewall" "allow_monitoring" {
   
   allow {
     protocol = "tcp"
-    ports    = ["3000", "9090"]  # Grafana: 3000, Prometheus: 9090
+    ports    = ["3000", "9090", "9093"]  # Grafana: 3000, Prometheus: 9090, AlertManager: 9093
   }
   
   source_ranges = ["0.0.0.0/0"] 
