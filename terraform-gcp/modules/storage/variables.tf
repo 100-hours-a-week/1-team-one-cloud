@@ -24,3 +24,8 @@ variable "storage_class" {
   type        = string
   default     = "STANDARD"
 }
+
+variable "service_account_name" {
+  description = "The name of the service account"
+  default     = "backend-sa"
+}
