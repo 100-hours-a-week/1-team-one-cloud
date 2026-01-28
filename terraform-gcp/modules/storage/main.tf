@@ -11,7 +11,7 @@ resource "google_storage_bucket" "image_bucket" {
   uniform_bucket_level_access = true
 
   # 공개 액세스 방지 (모든 접근은 Signed URL로만)
-  public_access_prevention = "enforced"
+  public_access_prevention = "inherited"
 
   # CORS 설정 (프론트엔드 직접 업로드를 위해 필수)
   cors {
@@ -43,4 +43,11 @@ resource "google_project_iam_member" "token_creator" {
   project = var.project_id
   role    = "roles/iam.serviceAccountTokenCreator"
   member  = "serviceAccount:${google_service_account.backend_sa.email}"
+}
+
+# 5. 버킷의 모든 객체에 대해 공개 읽기 권한 부여 (직접 접근용)
+resource "google_storage_bucket_iam_member" "public_read" {
+  bucket = google_storage_bucket.image_bucket.name
+  role   = "roles/storage.objectViewer"
+  member = "allUsers"
 }
