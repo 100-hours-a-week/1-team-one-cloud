@@ -1,6 +1,7 @@
 # 1. 이미지 저장용 GCS 버킷 생성
 resource "google_storage_bucket" "image_bucket" {
   name          = var.bucket_name
+  project       = var.project_id
   location      = var.location
   storage_class = var.storage_class
 

@@ -44,7 +44,11 @@ variable "service_account_email" {
 variable "cors_origins" {
   description = "CORS 허용 도메인 목록"
   type        = list(string)
-  default     = ["http://localhost:3000"]
+  default     = [
+    "http://localhost:3000",
+    "https://raisedeveloper.com",      # 실제 Prod 도메인 1로 변경하세요
+    "https://www.raisedeveloper.com"   # 실제 Prod 도메인 2로 변경하세요
+  ]
 }
 
 variable "boot_disk_image" {

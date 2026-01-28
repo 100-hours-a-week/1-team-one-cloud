@@ -40,12 +40,20 @@ module "compute" {
   subnet_self_link = module.network.subnet_self_link
 }
 
+# 모니터링 전용 서비스 계정 (권한 없음)
+resource "google_service_account" "monitoring_sa" {
+  account_id   = "monitoring-sa"
+  display_name = "Monitoring Server Service Account"
+  project      = var.project_id
+}
+
 # 모니터링 인스턴스 (모듈 사용하지 않고 직접 정의 - 재사용성 없음)
 resource "google_compute_instance" "monitoring" {
   name         = var.monitoring_instance_name
   machine_type = var.monitoring_machine_type
   zone         = var.zone
   project      = var.project_id
+  allow_stopping_for_update = true
   
   tags = ["ssh-enabled", "monitoring-server"]
 
@@ -65,7 +73,7 @@ resource "google_compute_instance" "monitoring" {
   }
 
   service_account {
-    email = module.storage.service_account_email
+    email = google_service_account.monitoring_sa.email
     scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
