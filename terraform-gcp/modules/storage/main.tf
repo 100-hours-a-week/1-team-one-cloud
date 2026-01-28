@@ -25,7 +25,7 @@ resource "google_storage_bucket" "image_bucket" {
 # 2. 백엔드 서버가 사용할 서비스 계정 (Service Account) 생성
 # (이미 있다면 data source로 가져와서 사용 가능)
 resource "google_service_account" "backend_sa" {
-  account_id   = "backend-sa"
+  account_id   = var.service_account_name
   display_name = "Backend API Service Account"
   project      = var.project_id
 }

@@ -71,6 +71,7 @@ module "storage" {
   project_id    = var.project_id
   location      = var.region
   bucket_name   = "raise-developer-bucket"
+  service_account_name = "backend-sa"
   cors_origins  = var.cors_origins
   storage_class = var.storage_class
 }
