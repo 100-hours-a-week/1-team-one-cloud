@@ -54,7 +54,7 @@ variable "cors_origins" {
   type        = list(string)
   default     = [
     "http://localhost:3000",
-    "https://dev.raisedeveloper.com" # 실제 Dev 도메인으로 변경하세요
+    "https://dev.raisedeveloper.com"
   ]
 }
 

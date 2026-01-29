@@ -35,19 +35,6 @@ resource "google_compute_firewall" "allow_web" {
   target_tags   = ["web-server"]
 }
 
-resource "google_compute_firewall" "allow_ai_server" {
-  name    = "allow-ai-server"
-  network = data.google_compute_network.default.name
-  project = var.project_id
-
-  allow {
-    protocol = "tcp"
-    ports    = ["8000"]
-  }
-  source_ranges = ["0.0.0.0/0"]
-  target_tags   = ["ai-server"]
-}
-
 module "compute" {
   source = "../../modules/compute"
 
@@ -59,7 +46,7 @@ module "compute" {
   service_account_email = module.storage.service_account_email
   boot_disk_image       = var.boot_disk_image
   boot_disk_type        = var.boot_disk_type
-  tags                  = ["ssh-enabled", "web-server", "ai-server"]
+  tags                  = ["ssh-enabled", "web-server"]
 
   # Data Source로 가져온 Default 서브넷 정보 전달
   subnet_self_link = data.google_compute_subnetwork.default.self_link
