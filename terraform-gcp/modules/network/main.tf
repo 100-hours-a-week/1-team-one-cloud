@@ -68,18 +68,3 @@ resource "google_compute_firewall" "allow_internal" {
     ports    = ["0-65535"]
   }
 }
-
-# 6. 방화벽 규칙: 모니터링 대시보드 (Grafana, Prometheus)
-resource "google_compute_firewall" "allow_monitoring" {
-  name    = "${var.environment}-allow-monitoring"
-  network = google_compute_network.vpc.name
-  project = var.project_id
-  
-  allow {
-    protocol = "tcp"
-    ports    = ["3000", "9090", "9093"]  # Grafana: 3000, Prometheus: 9090, AlertManager: 9093
-  }
-  
-  source_ranges = ["0.0.0.0/0"] 
-  target_tags   = ["monitoring-server"]
-}
