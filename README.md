@@ -25,7 +25,7 @@ cloud-infra/
     │   │   ├── outputs.tf    # 출력 값
     │   │   ├── terraform.tfvars.example  # 변수 값 예시
     │   │   └── .terraform.lock.hcl       # Provider 버전 잠금
-    └── modules/              # 재사용 모듈
+    └── modules/             # 재사용 모듈
        ├── compute/          # VM 인스턴스 관리
        ├── network/          # VPC 및 방화벽 관리
        └── storage/          # GCS 버킷 및 IAM 관리
@@ -50,8 +50,7 @@ cloud-infra/
 - **IAM**: 서비스 계정 자동 생성 및 권한 부여
 
 ### 방화벽
-- `default-allow-http` (80)
-- `default-allow-https` (443)
+- `allow-ssh` (22)
 - `allow-web-public` (80, 443)
 
 ## 로컬 환경
@@ -71,6 +70,7 @@ gcloud config set project [project-id]
 ### 2. 환경 설정
 ```bash
 cd terraform/environments/dev
+cd terraform.environments/prod
 
 # 변수 파일 생성
 cp terraform.tfvars.example terraform.tfvars
