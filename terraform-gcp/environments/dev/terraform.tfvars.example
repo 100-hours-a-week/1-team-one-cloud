@@ -8,3 +8,15 @@ environment = "dev"
 instance_name  = "your-instance-name"
 machine_type   = "e2-medium"
 boot_disk_size = 32
+
+# 네트워크 설정
+ssh_source_ranges = ["0.0.0.0/0"]
+
+# 스토리지 설정
+storage_class = "STANDARD"
+cors_origins = [
+  "your_domain.com"
+]
+
+# 서비스 계정
+service_account_email = "service_account_email@developer.gserviceaccount.com"
