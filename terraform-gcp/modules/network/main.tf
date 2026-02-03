@@ -68,3 +68,19 @@ resource "google_compute_firewall" "allow_internal" {
     ports    = ["0-65535"]
   }
 }
+
+# 6. 방화벽 규칙: 모니터링을 위해 서버 포트(3000, 8080) 허용 - 관리자 IP 한정
+resource "google_compute_firewall" "allow_app_admin" {
+  name    = "${var.environment}-allow-app-admin"
+  network = google_compute_network.vpc.name
+  project = var.project_id
+
+  allow {
+    protocol = "tcp"
+    ports    = ["3000", "8080"]
+  }
+
+  # SSH 허용 IP 대역(관리자 IP)을 사용하여 접근 제한
+  source_ranges = var.ssh_source_ranges
+  target_tags   = ["web-server"]
+}
