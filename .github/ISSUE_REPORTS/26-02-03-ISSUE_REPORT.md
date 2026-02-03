@@ -3,7 +3,7 @@
 
 특히 서비스의 핵심인 **알림 발송 직후 급격한 트래픽 유입**  상황에서의 안정성을 검증한다.
 
-<br/>
+---
 
 ## 2. 테스트 환경 및 데이터 준비
 ### 2.1 인프라 구성
@@ -12,7 +12,7 @@
 - **Tool:** k6 (Docker 실행), Python (데이터 생성)
 - **Network Latency:** GCP Central-1 기준 RTT Avg 175ms
 
-<br/>
+---
 
 ### 2.2 더미 데이터 생성 (Data Seeding)
 테스트의 정합성을 위해 1,000명 이상의 유저와 연관 데이터(프로필, 알림 설정, 루틴 등)를 생성.
@@ -355,7 +355,7 @@ if __name__ == "__main__":
 ```
 </details>
 
-<br/>
+---
 
 ## 3. 시나리오 A: 접속 부하 (Entry Storm)
 
@@ -366,7 +366,7 @@ if __name__ == "__main__":
   - **Backend:** `GET /api/users/me` (User Info)
   - **패턴:** Spike (30초 만에 1,000 VU 도달)
 
-<br/>
+---
 
 ### 3.2 테스트 스크립트 (k6)
 <details><summary>📂 <b> entry_storm.js</b></summary>
@@ -476,9 +476,9 @@ export default function () {
 ```
 </details>
 
-<br/>
+---
 
-### 3.3 테스트 결과
+### 3.3 테스트 결과 및 분석
 ```Plaintext
   █ THRESHOLDS 
     ✗ http_req_duration.............: p(95)=3.14s (목표 < 1.0s 실패)
@@ -489,17 +489,15 @@ export default function () {
     - HikariCP: Active 10 (Max), Pending 188
     - JVM Threads: 220 (Timed Waiting)
 ```
-<br/>
 
-### 3.4 분석 및 결론
 - **Latency 목표 미달:** 95%의 요청이 3.14초 이상 소요됨. 사용자 경험에 치명적임.
 - **BE 병목 확인:** FE 로딩보다 BE 데이터 조회(duration < 300ms) 실패율이 높음.
 - **원인 도출 (DB Connection Pool):**
   - CPU는 50%로 여유로우나, 스레드들이 일을 하지 못하고 대기 중(TIMED_WAITING).
   - **HikariCP Pending:** 188은 DB 커넥션을 얻기 위해 줄 서 있는 요청의 수임.
-  - **결론:** 기본 설정된 Connection Pool Size(10)가 동시 접속(RPS 300+)을 처리하기에 턱없이 부족함.
+- **결론:** 기본 설정된 Connection Pool Size(10)가 동시 접속(RPS 300+)을 처리하기에 턱없이 부족함.
 
-<br/>
+---
 
 ## 4. 시나리오 B: 로그인 부하 (Login Load)
 
@@ -507,7 +505,7 @@ export default function () {
 - **목표:** 대규모 유저의 로그인 요청 처리 능력 검증 (BCrypt 연산 부하 포함).
 - **패턴:** Constant Arrival Rate (Soak Test) 또는 Ramping (Load Test).
 
-<br/>
+---
 
 ### 4.2 테스트 스크립트(k6)
 
@@ -601,13 +599,14 @@ export default function () {
 }
 ```
 </details>
-<br/>
 
-### 4.2 테스트 결과
+---
+
+### 4.2 테스트 결과 (실패)
 - 동시 접속 200명 수준에서 Fail 발생.
 - **원인:** Entry Storm과 동일하게 HikariCP 고갈로 인한 타임아웃.
 
-<br/>
+---
 
 ### 4.3 개선 조치 사항
 HikariCP 튜닝이 필요.
@@ -624,7 +623,7 @@ spring:
       connection-timeout: 30000
 ```
 
-<br/>
+---
 
 ## 5. 시나리오 C: 데이터 볼륨 (스케줄러 성능)
 
@@ -632,9 +631,9 @@ spring:
 - **방식:** API 호출이 아닌, DB에 대량 데이터(1,000명) 적재 후 실제 스케줄러 실행 로그 분석.
 - **목표:** 정해진 시간(Cron)에 병목 없이 알림 발송 로직이 1분(60,000ms) 내에 완료되는지 검증.
 
-<br/>
+---
 
-### 5.2 실행 로그 분석
+### 5.2 실행 로그 및 구간별 소요 시간 분석
 ```Bash
 2026-01-31 21:00:00 PushAlarmScheduler   : 푸시 알람 스케줄러 시작
 
@@ -647,9 +646,6 @@ spring:
 2026-01-31 21:01:19 PushAlarmScheduler   : 푸시 알람 스케줄러 완료: 세션 생성 건수=1000, 소요 시간=79975ms
 ```
 
-<br/>
-
-### 5.3 구간별 소요 시간 분석
 | 단계 | 작업 내용 | 시작 시각 | 종료 시각 | 소요 시간 | 비고 |
 | --- | --- | --- | --- | --- | --- |
 | Step 1 | 대상 사용자 조회 (DB) | 00.002 | 00.662 | 0.66초 | 매우 빠름 (정상) |
@@ -657,9 +653,6 @@ spring:
 | Step 3 | 세션 생성 (DB 쓰기) | 05.289 | 33.574 | 28.29초 | 느림 (병목 2) |
 | Step 4 | 알림 발송 (Network I/O) | 33.574 | 79.975 | 46.40초 | 매우 느림 (주요 병목) |
 
-<br/>
-
-### 5.4 상세 원인 및 개선안
 1. **Network I/O Blocking (Step 4):**
   - **현재 구조:** Loop 돌면서 1명씩 발송 -> 응답 대기 -> 다음 발송.
   - **계산:** $46.4s / 1000 \approx 46ms/건$. (네트워크 RTT 대기 시간)
@@ -670,7 +663,7 @@ spring:
 3. **N+1 Query (Step 2):**
   - **개선:** Join Fetch를 사용하거나 데이터를 메모리에 한 번에 로드하여 애플리케이션 레벨에서 필터링.
 
-<br/>
+---
 
 ## 6. 종합 결론
 이번 부하 테스트를 통해 **서버 리소스(CPU)는 충분하나, DB 연결과 I/O 처리 방식에서 심각한 병목**이 있음을 확인했습니다.
@@ -682,3 +675,9 @@ spring:
    - JPA N+1 문제 해결 및 Bulk Insert 적용.
   
 위 개선 사항 적용 후 2차 부하 테스트를 진행하여 p95 < 1.0s 달성 여부를 검증할 예정
+
+---
+
+작성일: 2026-02-03
+작성 담당자: Mika
+검토자: James, Brian
