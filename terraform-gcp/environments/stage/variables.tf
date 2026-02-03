@@ -46,8 +46,7 @@ variable "cors_origins" {
   type        = list(string)
   default     = [
     "http://localhost:3000",
-    "https://raisedeveloper.com",
-    "https://www.raisedeveloper.com"
+    "https://staging.raisedeveloper.com" # Staging 도메인
   ]
 }
 
@@ -71,19 +70,14 @@ variable "storage_class" {
   type        = string
 }
 
-# 모니터링 인스턴스 설정
-variable "monitoring_instance_name" {
-  description = "모니터링 VM 인스턴스 이름"
-  type        = string
+variable "prod_monitoring_source_ranges" {
+  description = "운영(Prod) 모니터링 서버의 소스 IP 대역 (CIDR 형식, 예: [\"IP/32\"])"
+  type        = list(string)
+  default     = [] # 값이 없으면 방화벽 규칙을 생성하지 않음
 }
 
-variable "monitoring_machine_type" {
-  description = "모니터링 머신 타입"
-  type        = string
-}
-
-variable "monitoring_boot_disk_size" {
-  description = "모니터링 부트 디스크 크기 (GB)"
-  type        = number
-  default     = 64
+variable "temp_my_ip" {
+  description = "임시 IP (terraform.tfvars 경고 해결용)"
+  type        = list(string)
+  default     = []
 }
