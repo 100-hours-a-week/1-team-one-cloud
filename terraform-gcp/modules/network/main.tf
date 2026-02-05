@@ -87,6 +87,6 @@ resource "google_compute_firewall" "allow_app_admin" {
   }
 
   # SSH 허용 IP 대역(관리자 IP)을 사용하여 접근 제한
-  source_ranges = var.ssh_source_ranges
+  source_ranges = var.admin_ip
   target_tags   = ["web-server"]
 }

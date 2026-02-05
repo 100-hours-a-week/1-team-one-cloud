@@ -36,3 +36,9 @@ variable "vpc_name" {
   type        = string
   default     = ""
 }
+
+variable "admin_ip" {
+  description = "admin IP"
+  type        = list(string)
+  default     = []
+}

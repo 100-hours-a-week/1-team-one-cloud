@@ -14,6 +14,7 @@ module "network" {
   environment       = var.environment
   subnet_cidr       = "10.0.3.0/24" # Dev(10.0.1.0), Prod(10.0.2.0)와 겹치지 않게 설정
   ssh_source_ranges = var.ssh_source_ranges
+  admin_ip = var.admin_ip
   
   # Prod VPC 사용 설정
   use_existing_vpc = true

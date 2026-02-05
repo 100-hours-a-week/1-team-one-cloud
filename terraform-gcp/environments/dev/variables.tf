@@ -77,3 +77,9 @@ variable "storage_class" {
   description = "GCS 스토리지 클래스"
   type        = string
 }
+
+variable "admin_ip" {
+  description = "admin IP"
+  type        = list(string)
+  default     = []
+}

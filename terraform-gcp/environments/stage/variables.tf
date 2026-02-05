@@ -76,8 +76,8 @@ variable "prod_monitoring_source_ranges" {
   default     = [] # 값이 없으면 방화벽 규칙을 생성하지 않음
 }
 
-variable "temp_my_ip" {
-  description = "임시 IP (terraform.tfvars 경고 해결용)"
+variable "admin_ip" {
+  description = "admin IP"
   type        = list(string)
   default     = []
 }
