@@ -19,9 +19,8 @@ module "network" {
   project_id        = var.project_id
   region            = var.region
   environment       = var.environment
-  subnet_cidr       = "10.0.2.0/24"
+  subnet_cidr       = "10.0.2.0/24" # Dev(10.0.1.0/24)와 겹치지 않게 설정
   ssh_source_ranges = var.ssh_source_ranges
-  admin_ip = var.admin_ip
 }
 
 module "compute" {

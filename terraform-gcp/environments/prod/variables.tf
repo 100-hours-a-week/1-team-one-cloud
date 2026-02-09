@@ -87,9 +87,3 @@ variable "monitoring_boot_disk_size" {
   type        = number
   default     = 64
 }
-
-variable "admin_ip" {
-  description = "admin IP"
-  type        = list(string)
-  default     = []
-}
