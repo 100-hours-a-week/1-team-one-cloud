@@ -3,6 +3,7 @@ resource "google_compute_instance" "main" {
   machine_type = var.machine_type
   zone         = var.zone
   project      = var.project_id
+  allow_stopping_for_update = true
 
   tags = var.tags
 
