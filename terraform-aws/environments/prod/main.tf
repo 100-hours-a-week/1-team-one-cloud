@@ -26,3 +26,15 @@ module "vpc" {
     ManagedBy   = "Terraform"
   }
 }
+
+module "ecr" {
+  source = "../../modules/ecr"
+
+  environment = "production"
+
+  tags = {
+    Environment = "production"
+    Project     = "RaiseDeveloper"
+    ManagedBy   = "Terraform"
+  }
+}
