@@ -52,3 +52,28 @@ module "ecr" {
     ManagedBy   = "Terraform"
   }
 }
+
+module "parameter_store" {
+  source = "../../modules/parameter_store"
+
+  environment = "production"
+
+  server_base_url    = var.server_base_url
+  db_host            = var.db_host
+  db_password        = var.db_password
+  jwt_secret         = var.jwt_secret
+  token_hash_secret  = var.token_hash_secret
+  ai_server_base_url = var.ai_server_base_url
+  gcs_bucket_name    = var.gcs_bucket_name
+  gcp_project_id     = var.gcp_project_id
+  redis_host         = var.redis_host
+  openai_api_key     = var.openai_api_key
+  gemini_api_key     = var.gemini_api_key
+  ollama_api_key     = var.ollama_api_key
+
+  tags = {
+    Environment = "production"
+    Project     = "RaiseDeveloper"
+    ManagedBy   = "Terraform"
+  }
+}
