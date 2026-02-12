@@ -77,3 +77,23 @@ module "parameter_store" {
     ManagedBy   = "Terraform"
   }
 }
+
+module "s3" {
+  source = "../../modules/s3"
+
+  environment        = "production"
+  image_bucket_name  = "raise-developer-prod-bucket"
+  deploy_bucket_name = "raise-developer-prod-deploy"
+
+  cors_origins = [
+    "https://raisedeveloper.com",
+    "https://www.raisedeveloper.com",
+    "http://localhost:3000"
+  ]
+
+  tags = {
+    Environment = "production"
+    Project     = "raisedeveloper"
+    ManagedBy   = "terraform"
+  }
+}

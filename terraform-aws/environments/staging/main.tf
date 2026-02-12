@@ -32,3 +32,22 @@ module "ecr" {
     ManagedBy   = "Terraform"
   }
 }
+
+module "s3" {
+  source = "../../modules/s3"
+
+  environment        = "staging"
+  image_bucket_name  = "raise-developer-staging-bucket"
+  deploy_bucket_name = "raise-developer-staging-deploy"
+
+  cors_origins = [
+    "https://stage.raisedeveloper.com",
+    "http://localhost:3000"
+  ]
+
+  tags = {
+    Environment = "staging"
+    Project     = "raisedeveloper"
+    ManagedBy   = "terraform"
+  }
+}
