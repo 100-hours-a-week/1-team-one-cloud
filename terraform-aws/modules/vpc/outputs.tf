@@ -44,29 +44,3 @@ output "private_route_table_id" {
   description = "Private Route Table ID (Main RT)"
   value       = aws_default_route_table.private.id  
 }
-
-# Security Group Outputs
-output "alb_security_group_id" {
-  description = "ALB Security Group ID"
-  value       = aws_security_group.alb.id
-}
-
-output "frontend_security_group_id" {
-  description = "Frontend Security Group ID"
-  value       = aws_security_group.frontend.id
-}
-
-output "backend_security_group_id" {
-  description = "Backend Security Group ID"
-  value       = aws_security_group.backend.id
-}
-
-output "ai_security_group_id" {
-  description = "AI Security Group ID"
-  value       = aws_security_group.ai.id
-}
-
-output "rds_security_group_id" {
-  description = "RDS Security Group ID"
-  value       = aws_security_group.rds.id
-}

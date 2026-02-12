@@ -27,6 +27,20 @@ module "vpc" {
   }
 }
 
+module "security_groups" {
+  source = "../../modules/security_groups"
+
+  environment = "production"
+  vpc_id      = module.vpc.vpc_id
+  use_rds     = true  # Production은 RDS 사용
+
+  tags = {
+    Environment = "production"
+    Project     = "RaiseDeveloper"
+    ManagedBy   = "Terraform"
+  }
+}
+
 module "ecr" {
   source = "../../modules/ecr"
 
