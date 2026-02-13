@@ -39,3 +39,28 @@ module "s3" {
     ManagedBy   = "terraform"
   }
 }
+
+data "aws_subnets" "public" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.shared.id]
+  }
+  tags = {
+    Tier = "Public"
+  }
+}
+
+module "alb" {
+  source = "../../modules/alb"
+
+  environment           = "staging"
+  vpc_id                = data.aws_vpc.shared.id
+  public_subnet_ids     = data.aws_subnets.public.ids
+  alb_security_group_id = module.security_groups.alb_sg_id
+
+  tags = {
+    Environment = "staging"
+    Project     = "RaiseDeveloper"
+    ManagedBy   = "terraform"
+  }
+}

@@ -94,3 +94,18 @@ module "s3" {
     ManagedBy   = "terraform"
   }
 }
+
+module "alb" {
+  source = "../../modules/alb"
+
+  environment           = "production"
+  vpc_id                = module.vpc.vpc_id
+  public_subnet_ids     = module.vpc.public_subnet_ids
+  alb_security_group_id = module.security_groups.alb_sg_id
+
+  tags = {
+    Environment = "production"
+    Project     = "RaiseDeveloper"
+    ManagedBy   = "terraform"
+  }
+}
