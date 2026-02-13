@@ -44,10 +44,7 @@ module "security_groups" {
 module "ecr" {
   source = "../../modules/ecr"
 
-  environment = "production"
-
   tags = {
-    Environment = "production"
     Project     = "RaiseDeveloper"
     ManagedBy   = "Terraform"
   }

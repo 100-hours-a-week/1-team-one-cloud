@@ -1,56 +1,46 @@
 # modules/ecr/main.tf
-# Backend Repository
+# 서비스 단위 레포지토리 (환경은 태그로 구분)
+
 resource "aws_ecr_repository" "backend" {
-  name                 = "${var.environment}-backend"
+  name                 = "backend"
   image_tag_mutability = "MUTABLE"
 
   encryption_configuration {
     encryption_type = "AES256"
   }
 
-  tags = merge(
-    var.tags,
-    {
-      Name    = "${var.environment}-backend"
-      Service = "backend"
-    }
-  )
+  tags = merge(var.tags, {
+    Name    = "backend"
+    Service = "backend"
+  })
 }
 
-# Frontend Repository
 resource "aws_ecr_repository" "frontend" {
-  name                 = "${var.environment}-frontend"
+  name                 = "frontend"
   image_tag_mutability = "MUTABLE"
 
   encryption_configuration {
     encryption_type = "AES256"
   }
 
-  tags = merge(
-    var.tags,
-    {
-      Name    = "${var.environment}-frontend"
-      Service = "frontend"
-    }
-  )
+  tags = merge(var.tags, {
+    Name    = "frontend"
+    Service = "frontend"
+  })
 }
 
-# AI Repository
 resource "aws_ecr_repository" "ai" {
-  name                 = "${var.environment}-ai"
+  name                 = "ai"
   image_tag_mutability = "MUTABLE"
 
   encryption_configuration {
     encryption_type = "AES256"
   }
 
-  tags = merge(
-    var.tags,
-    {
-      Name    = "${var.environment}-ai"
-      Service = "ai"
-    }
-  )
+  tags = merge(var.tags, {
+    Name    = "ai"
+    Service = "ai"
+  })
 }
 
 # Backend Lifecycle Policy
@@ -61,29 +51,36 @@ resource "aws_ecr_lifecycle_policy" "backend" {
     rules = [
       {
         rulePriority = 1
-        description  = "Keep last 20 prod tagged images"
+        description  = "Keep last 20 prod images"
         selection = {
           tagStatus     = "tagged"
-          tagPrefixList = ["prod"]
+          tagPrefixList = ["prod-"]
           countType     = "imageCountMoreThan"
           countNumber   = 20
         }
-        action = {
-          type = "expire"
-        }
+        action = { type = "expire" }
       },
       {
         rulePriority = 2
-        description  = "Keep images pushed within 30 days"
+        description  = "Keep last 20 staging images"
         selection = {
-          tagStatus   = "any"
+          tagStatus     = "tagged"
+          tagPrefixList = ["staging-"]
+          countType     = "imageCountMoreThan"
+          countNumber   = 20
+        }
+        action = { type = "expire" }
+      },
+      {
+        rulePriority = 3
+        description  = "Remove untagged after 14 days"
+        selection = {
+          tagStatus   = "untagged"
           countType   = "sinceImagePushed"
           countUnit   = "days"
-          countNumber = 30
+          countNumber = 14
         }
-        action = {
-          type = "expire"
-        }
+        action = { type = "expire" }
       }
     ]
   })
@@ -97,29 +94,36 @@ resource "aws_ecr_lifecycle_policy" "frontend" {
     rules = [
       {
         rulePriority = 1
-        description  = "Keep last 20 prod tagged images"
+        description  = "Keep last 20 prod images"
         selection = {
           tagStatus     = "tagged"
-          tagPrefixList = ["prod"]
+          tagPrefixList = ["prod-"]
           countType     = "imageCountMoreThan"
           countNumber   = 20
         }
-        action = {
-          type = "expire"
-        }
+        action = { type = "expire" }
       },
       {
         rulePriority = 2
-        description  = "Keep images pushed within 30 days"
+        description  = "Keep last 20 staging images"
         selection = {
-          tagStatus   = "any"
+          tagStatus     = "tagged"
+          tagPrefixList = ["staging-"]
+          countType     = "imageCountMoreThan"
+          countNumber   = 20
+        }
+        action = { type = "expire" }
+      },
+      {
+        rulePriority = 3
+        description  = "Remove untagged after 14 days"
+        selection = {
+          tagStatus   = "untagged"
           countType   = "sinceImagePushed"
           countUnit   = "days"
-          countNumber = 30
+          countNumber = 14
         }
-        action = {
-          type = "expire"
-        }
+        action = { type = "expire" }
       }
     ]
   })
@@ -133,29 +137,36 @@ resource "aws_ecr_lifecycle_policy" "ai" {
     rules = [
       {
         rulePriority = 1
-        description  = "Keep last 30 prod tagged images"
+        description  = "Keep last 20 prod images"
         selection = {
           tagStatus     = "tagged"
-          tagPrefixList = ["prod"]
+          tagPrefixList = ["prod-"]
           countType     = "imageCountMoreThan"
           countNumber   = 20
         }
-        action = {
-          type = "expire"
-        }
+        action = { type = "expire" }
       },
       {
         rulePriority = 2
-        description  = "Keep images pushed within 30 days"
+        description  = "Keep last 20 staging images"
         selection = {
-          tagStatus   = "any"
+          tagStatus     = "tagged"
+          tagPrefixList = ["staging-"]
+          countType     = "imageCountMoreThan"
+          countNumber   = 20
+        }
+        action = { type = "expire" }
+      },
+      {
+        rulePriority = 3
+        description  = "Remove untagged after 14 days"
+        selection = {
+          tagStatus   = "untagged"
           countType   = "sinceImagePushed"
           countUnit   = "days"
-          countNumber = 30
+          countNumber = 14
         }
-        action = {
-          type = "expire"
-        }
+        action = { type = "expire" }
       }
     ]
   })

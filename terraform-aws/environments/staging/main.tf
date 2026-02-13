@@ -21,18 +21,6 @@ module "security_groups" {
   }
 }
 
-module "ecr" {
-  source = "../../modules/ecr"
-
-  environment = "staging"
-
-  tags = {
-    Environment = "staging"
-    Project     = "RaiseDeveloper"
-    ManagedBy   = "Terraform"
-  }
-}
-
 module "s3" {
   source = "../../modules/s3"
 
