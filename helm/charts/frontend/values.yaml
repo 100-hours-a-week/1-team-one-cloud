@@ -1,0 +1,51 @@
+# helm/charts/frontend/values.yaml
+# 기본값 기준 (prod), dev는 envs/dev/frontend-values.yaml에서 오버라이드
+
+# 이미지 설정
+image:
+  # ECR 레포지토리 주소 (태그 제외)
+  repository: <AWS_ACCOUNT_ID>.dkr.ecr.ap-northeast-2.amazonaws.com/frontend
+  # GitHub Actions가 PR Merge 시 자동으로 교체하는 값
+  tag: "latest"
+
+  # 같은 태그여도 항상 새 이미지를 pull (latest 태그 사용 시 필수)
+  # 고정 SHA 태그 사용 시 IfNotPresent로 변경 가능
+  pullPolicy: Always
+
+# 파드 개수 (prod 기준)
+# HPA 적용 시 Deployment에서 replicas 필드 제거하고 여기서만 관리
+# minReplicas 참조용으로만 사용
+replicaCount: 2
+
+# 리소스 설정
+resources:
+  requests:
+    cpu: "200m"
+    memory: "256Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+# HPA 설정 (prod는 활성화)
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+  cpuUtilization: 60
+  memoryUtilization: 70
+
+# PDB 설정
+pdb:
+  # 항상 최소 1개 파드는 살아있도록 보장
+  minAvailable: 1
+
+# 네임스페이스
+namespace: prod-app
+
+# 노드 배치 설정
+nodeSelector:
+  # prod 워커 노드에만 스케줄링
+  role: prod-worker
+
+# prod 노드 taint 허용
+toleration: "prod"

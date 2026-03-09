@@ -1,0 +1,51 @@
+# helm/charts/frontend/templates/hpa.yaml
+
+# HPA는 prod만 활성화 (values.yaml의 hpa.enabled로 제어)
+{{- if .Values.hpa.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ .Chart.Name }}-hpa
+  namespace: {{ .Values.namespace }}
+
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    # 어떤 Deployment를 스케일할지 지정
+    name: {{ .Chart.Name }}
+
+  minReplicas: {{ .Values.hpa.minReplicas }}
+  maxReplicas: {{ .Values.hpa.maxReplicas }}
+
+  metrics:
+    # CPU와 Memory 둘 중 하나라도 임계값 초과 시 Scale-out
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.hpa.cpuUtilization }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.hpa.memoryUtilization }}
+
+  behavior:
+    scaleUp:
+      # 즉시 확장 (트래픽 스파이크 대응)
+      stabilizationWindowSeconds: 0
+      policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 30
+    scaleDown:
+      # 5분 안정화 후 축소 (flapping 방지)
+      stabilizationWindowSeconds: 300
+      policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 60
+{{- end }}

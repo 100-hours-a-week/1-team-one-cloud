@@ -1,0 +1,36 @@
+# helm/envs/dev/frontend-values.yaml
+# dev 환경 오버라이드 (values.yaml의 prod 기준값을 dev 스펙으로 덮어씀)
+
+# 이미지 태그 (GitHub Actions가 자동 교체)
+image:
+  tag: "latest"
+
+# dev는 워커 노드 1대라 replica 1개
+replicaCount: 1
+
+# dev 환경 리소스 축소
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "300m"
+    memory: "256Mi"
+
+# dev는 HPA 비활성화
+hpa:
+  enabled: false
+
+# PDB 비활성화 (replica 1개라 minAvailable: 1이면 배포 자체가 막힘)
+pdb:
+  minAvailable: 0
+
+# dev 네임스페이스
+namespace: dev-app
+
+# dev 워커 노드에만 스케줄링
+nodeSelector:
+  role: dev-worker
+
+# dev 노드 taint 허용
+toleration: "dev"

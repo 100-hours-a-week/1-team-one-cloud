@@ -1,0 +1,22 @@
+# helm/charts/frontend/Chart.yaml
+
+# Helm 버전 명시 (v2 = Helm 4 기준, 현재 표준)
+apiVersion: v2
+
+# Chart 이름 (ArgoCD에서 이 이름으로 식별)
+name: frontend
+
+description: RaiseDeveloper Frontend (Next.js)
+
+# application = 실제 배포용 Chart
+# library = 다른 Chart에서 가져다 쓰는 공통 템플릿용
+type: application
+
+# Chart 자체의 버전
+# 템플릿 구조(deployment.yaml 등)가 바뀔 때 올림
+# 앱 버전이랑 무관
+version: 0.1.0
+
+# 애플리케이션 버전 (참고용 메타데이터)
+# 실제 배포 이미지는 values.yaml의 image.tag로 관리
+appVersion: "1.0.0"
