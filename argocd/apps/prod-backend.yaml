@@ -1,0 +1,32 @@
+# argocd/apps/prod-backend.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prod-backend
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
+spec:
+  project: prod-project
+
+  source:
+    repoURL: https://github.com/100-hours-a-week/1-team-one-cloud.git
+    targetRevision: HEAD
+    path: helm/charts/backend
+    helm:
+      # prod 환경 values 오버라이드
+      valueFiles:
+        - ../../../helm/envs/prod/backend-values.yaml
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: prod-app
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      # 네임스페이스 없으면 자동 생성
+      - CreateNamespace=true

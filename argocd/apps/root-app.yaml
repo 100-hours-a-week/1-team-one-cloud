@@ -1,0 +1,28 @@
+# argocd/apps/root-app.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/100-hours-a-week/1-team-one-cloud.git
+    targetRevision: HEAD
+    # 이 경로 안의 yaml 파일들을 전부 Application으로 등록
+    path: argocd/apps
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+
+  syncPolicy:
+    automated:
+      # Git에서 삭제된 App은 클러스터에서도 자동 삭제
+      prune: true
+      # 클러스터 상태가 Git과 달라지면 자동 동기화
+      selfHeal: true
