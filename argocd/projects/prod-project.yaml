@@ -1,0 +1,27 @@
+# argocd/projects/prod-project.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: prod-project
+  namespace: argocd
+  # App이 이 Project를 참조하는 동안 실수로 삭제 방지 -> 공식 문서 권장
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
+spec:
+  description: "Production 환경 배포 프로젝트"
+
+  # 이 Project 소속 App이 가져올 수 있는 Git 레포 허용 목록
+  sourceRepos:
+    - "https://github.com/100-hours-a-week/1-team-one-cloud.git"
+
+  # 배포 가능한 클러스터 및 네임스페이스 허용 목록
+  # kubernetes.default.svc = ArgoCD가 설치된 같은 클러스터 내부
+  destinations:
+    - namespace: prod-app
+      server: https://kubernetes.default.svc
+
+  # 클러스터 레벨 리소스 허용 (Namespace, CRD 등)
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"

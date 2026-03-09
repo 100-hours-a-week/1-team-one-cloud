@@ -1,0 +1,24 @@
+# argocd/projects/dev-project.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dev-project
+  namespace: argocd
+  # App이 이 Project를 참조하는 동안 실수로 삭제 방지 -> 공식 문서 권장
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
+spec:
+  description: "Development 환경 배포 프로젝트"
+
+  sourceRepos:
+    - "https://github.com/100-hours-a-week/1-team-one-cloud.git"
+
+  # dev-app 네임스페이스만 허용
+  destinations:
+    - namespace: dev-app
+      server: https://kubernetes.default.svc
+
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
