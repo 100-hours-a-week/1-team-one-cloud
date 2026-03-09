@@ -1,0 +1,21 @@
+# helm/charts/ai-server/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  # Deployment와 동일한 이름 기준으로 생성
+  name: {{ .Chart.Name }}-svc
+  namespace: {{ .Values.namespace }}
+
+spec:
+  # ClusterIP = 클러스터 내부 통신 전용
+  # 외부 트래픽은 Envoy Gateway가 담당하므로 Service는 내부 라우팅만
+  type: ClusterIP
+
+  # app 라벨이 ai-server인 파드로 트래픽 전달
+  selector:
+    app: {{ .Chart.Name }}
+
+  ports:
+    - port: 80           # Service가 받는 포트 (클러스터 내부에서 80으로 접근)
+      targetPort: 8000   # 실제 파드(FaseAPI)가 열고 있는 포트
+      protocol: TCP

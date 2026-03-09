@@ -1,0 +1,3 @@
+# helm/envs/prod/ai-values.yaml
+image:
+  tag: "latest"

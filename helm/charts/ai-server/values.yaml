@@ -1,0 +1,62 @@
+# helm/charts/ai-server/values.yaml
+# 기본값 기준 (prod), dev는 envs/dev/ai-values.yaml에서 오버라이드
+
+# 이미지 설정
+image:
+  repository: <AWS_ACCOUNT_ID>.dkr.ecr.ap-northeast-2.amazonaws.com/ai-server
+  tag: "latest"
+  pullPolicy: Always
+
+# 파드 개수 (prod 기준)
+replicaCount: 2
+
+# 리소스 설정
+# FastAPI는 Spring Boot보다 가볍지만 LLM 호출로 메모리 사용량 있음
+resources:
+  requests:
+    cpu: "200m"
+    memory: "512Mi"
+  limits:
+    cpu: "700m"
+    memory: "1024Mi"
+
+# HPA 설정 (prod는 활성화)
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+  cpuUtilization: 60
+  memoryUtilization: 70
+
+# PDB 설정
+pdb:
+  minAvailable: 1
+
+# 네임스페이스
+namespace: prod-app
+
+# 노드 배치 설정
+nodeSelector:
+  role: prod-worker
+
+# prod 노드 taint 허용
+toleration: "prod"
+
+# ConfigMap 이름
+configMapName: ai-config
+
+# Secret 이름
+secretName: ai-secret
+
+# configs
+config:
+  appEnv: "prod"
+  logLevel: "DEBUG"
+  logDir: "logs"
+  logFileName: "app.log"
+  metricsEnabled: "false"
+  host: "0.0.0.0"
+  port: "8000"
+  callbackUrl: "https://raisedeveloper.com/api/routines/callback"
+  exerciseApiUrl: "https://raisedeveloper.com/api/exercises"
+  qdrantUrl: ""  # 미정, 확정 후 채울 것

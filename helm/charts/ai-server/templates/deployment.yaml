@@ -1,0 +1,102 @@
+# helm/charts/ai-server/templates/deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # Chart 이름을 기반으로 자동 생성 (예: backend)
+  name: {{ .Chart.Name }}
+  # values.yaml의 namespace 값 주입
+  namespace: {{ .Values.namespace }}
+
+spec:
+  # HPA 사용 시 replicas 필드 제거 (ArgoCD 충돌 방지)
+  # dev는 HPA 없으니 replicaCount 직접 사용
+  {{- if not .Values.hpa.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+
+  # 무중단 롤링 업데이트
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      # 새 파드 먼저 추가 후 구 파드 제거
+      maxSurge: 1
+      # 업데이트 중 항상 현재 replicas 수 유지
+      maxUnavailable: 0
+
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+
+    spec:
+      # values.yaml의 nodeSelector 값 주입
+      # prod-worker / dev-worker 노드로 분리 배치
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+
+      # AZ 단위 분산 배치 (preferred)
+      # required와 달리 조건 불충족 시에도 스케줄링 허용
+      # HPA Scale-out 시 replicas가 AZ 수 초과해도 Pending 없음
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - {{ .Chart.Name }}
+                topologyKey: topology.kubernetes.io/zone
+
+      # taint 허용 설정
+      # 노드에 건 taint를 이 파드가 허용 (노드에서 taint 설정 추가 필요!)
+      tolerations:
+        - key: "dedicated"
+          operator: "Equal"
+          value: {{ .Values.toleration }}
+          effect: "NoSchedule"
+
+
+      containers:
+        - name: {{ .Chart.Name }}
+          # values.yaml의 image 값 조합
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          ports:
+            - containerPort: 8000
+
+          # ConfigMap (비민감 설정) + Secret (민감 정보) 전체 주입
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.configMapName }}
+            - secretRef:
+                name: {{ .Values.secretName }}
+
+          # values.yaml의 resources 값 주입
+          resources:
+            {{- toYaml .Values.resources | nindent 10 }}
+
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+
+
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3

@@ -1,0 +1,24 @@
+# helm/charts/ai-server/templates/configmap.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMapName }}
+  namespace: {{ .Values.namespace }}
+
+data:
+  # environment
+  APP_ENV: {{ .Values.config.appEnv }}
+  LOG_LEVEL: {{ .Values.config.logLevel }}
+  LOG_DIR: {{ .Values.config.logDir }}
+  LOG_FILE_NAME: {{ .Values.config.logFileName }}
+  METRICS_ENABLED: {{ .Values.config.metricsEnabled }}
+
+  # server
+  HOST: {{ .Values.config.host }}
+  PORT: {{ .Values.config.port }}
+
+  # url
+  CALLBACK_URL: {{ .Values.config.callbackUrl }}
+  EXERCISE_API_URL: {{ .Values.config.exerciseApiUrl }}
+  QDRANT_URL: {{ .Values.config.qdrantUrl }}

@@ -1,0 +1,31 @@
+# helm/envs/dev/ai-values.yaml
+image:
+  tag: "latest"
+
+replicaCount: 1
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "256Mi"
+  limits:
+    cpu: "400m"
+    memory: "512Mi"
+
+hpa:
+  enabled: false
+
+pdb:
+  minAvailable: 0
+
+namespace: dev-app
+
+nodeSelector:
+  role: dev-worker
+
+toleration: "dev"
+
+config:
+  appEnv: "dev"
+  callbackUrl: "https://dev.raisedeveloper.com/api/routines/callback"
+  exerciseApiUrl: "https://dev.raisedeveloper.com/api/exercises"
