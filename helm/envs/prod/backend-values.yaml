@@ -1,0 +1,3 @@
+# helm/envs/prod/backend-values.yaml
+image:
+  tag: "latest"

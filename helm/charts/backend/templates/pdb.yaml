@@ -1,0 +1,17 @@
+# helm/charts/backend/templates/pdb.yaml
+
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Chart.Name }}-pdb
+  namespace: {{ .Values.namespace }}
+
+spec:
+  # 최소 가용 파드 수 (values.yaml에서 환경별로 다르게 설정)
+  # prod: 1 → 배포/노드 drain 시 최소 1개는 살아있어야 함
+  # dev:  0 → replica 1개라 0으로 설정 (1이면 배포 자체가 막힘)
+  minAvailable: {{ .Values.pdb.minAvailable }}
+
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}

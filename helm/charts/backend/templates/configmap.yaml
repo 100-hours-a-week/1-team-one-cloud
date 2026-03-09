@@ -1,0 +1,20 @@
+# helm/charts/backend/templates/configmap.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMapName }}
+  namespace: {{ .Values.namespace }}
+
+data:
+  SPRING_PROFILES_ACTIVE: {{ .Values.config.springProfile }}
+
+  # AI 서버 연동
+  AI_SERVER_ROUTINE_API: {{ .Values.config.aiServerRoutineApi }}
+  AI_SERVER_ROUTINE_ASYNC_API: {{ .Values.config.aiServerRoutineAsyncApi }}
+  AI_SERVER_USER_PROFILE_API: {{ .Values.config.aiServerUserProfileApi }}
+
+  # AWS S3
+  STORAGE_PROVIDER: {{ .Values.config.storageProvider }}
+  AWS_REGION: {{ .Values.config.awsRegion }}
+  ICON_URL: {{ .Values.config.iconUrl }}
