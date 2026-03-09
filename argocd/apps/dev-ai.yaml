@@ -1,0 +1,30 @@
+# argocd/apps/dev-ai.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dev-ai
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
+spec:
+  project: dev-project
+
+  source:
+    repoURL: https://github.com/100-hours-a-week/1-team-one-cloud.git
+    targetRevision: HEAD
+    path: helm/charts/ai-server
+    helm:
+      valueFiles:
+        - ../../../helm/envs/dev/ai-values.yaml
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev-app
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
