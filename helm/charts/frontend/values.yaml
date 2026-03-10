@@ -4,7 +4,7 @@
 # 이미지 설정
 image:
   # ECR 레포지토리 주소 (태그 제외)
-  repository: <AWS_ACCOUNT_ID>.dkr.ecr.ap-northeast-2.amazonaws.com/frontend
+  repository: 624234316947.dkr.ecr.ap-northeast-2.amazonaws.com/frontend
   # GitHub Actions가 PR Merge 시 자동으로 교체하는 값
   tag: "latest"
 
