@@ -33,7 +33,7 @@ nodeSelector:
   role: dev-worker
 
 # dev 노드 taint 허용
-toleration: "dev"
+toleration: "dev-worker"
 
 # dev 환경에서 달라지는 config값만 오버라이드
 config:

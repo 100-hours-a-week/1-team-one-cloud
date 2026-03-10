@@ -23,7 +23,7 @@ namespace: dev-app
 nodeSelector:
   role: dev-worker
 
-toleration: "dev"
+toleration: "dev-worker"
 
 config:
   appEnv: "dev"

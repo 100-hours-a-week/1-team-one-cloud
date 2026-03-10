@@ -48,7 +48,7 @@ nodeSelector:
   role: prod-worker
 
 # prod 노드 taint 허용
-toleration: "prod"
+toleration: "prod-worker"
 
 # ConfigMap 이름 (환경변수 비민감 설정)
 configMapName: backend-config

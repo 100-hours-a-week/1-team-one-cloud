@@ -40,7 +40,7 @@ nodeSelector:
   role: prod-worker
 
 # prod 노드 taint 허용
-toleration: "prod"
+toleration: "prod-worker"
 
 # ConfigMap 이름
 configMapName: ai-config

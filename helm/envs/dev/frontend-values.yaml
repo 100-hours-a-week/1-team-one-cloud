@@ -33,4 +33,4 @@ nodeSelector:
   role: dev-worker
 
 # dev 노드 taint 허용
-toleration: "dev"
+toleration: "dev-worker"
