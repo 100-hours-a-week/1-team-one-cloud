@@ -7,18 +7,13 @@ metadata:
   namespace: {{ .Values.namespace }}
 
 data:
-  # environment
-  APP_ENV: {{ .Values.config.appEnv }}
-  LOG_LEVEL: {{ .Values.config.logLevel }}
-  LOG_DIR: {{ .Values.config.logDir }}
-  LOG_FILE_NAME: {{ .Values.config.logFileName }}
-  METRICS_ENABLED: {{ .Values.config.metricsEnabled }}
-
-  # server
-  HOST: {{ .Values.config.host }}
-  PORT: {{ .Values.config.port }}
-
-  # url
-  CALLBACK_URL: {{ .Values.config.callbackUrl }}
-  EXERCISE_API_URL: {{ .Values.config.exerciseApiUrl }}
-  QDRANT_URL: {{ .Values.config.qdrantUrl }}
+  APP_ENV: {{ .Values.config.appEnv | quote }}
+  LOG_LEVEL: {{ .Values.config.logLevel | quote }}
+  LOG_DIR: {{ .Values.config.logDir | quote }}
+  LOG_FILE_NAME: {{ .Values.config.logFileName | quote }}
+  METRICS_ENABLED: {{ .Values.config.metricsEnabled | quote }}
+  HOST: {{ .Values.config.host | quote }}
+  PORT: {{ .Values.config.port | quote }}
+  CALLBACK_URL: {{ .Values.config.callbackUrl | quote }}
+  EXERCISE_API_URL: {{ .Values.config.exerciseApiUrl | quote }}
+  QDRANT_URL: {{ .Values.config.qdrantUrl | quote }}
