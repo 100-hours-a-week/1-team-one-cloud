@@ -1,6 +1,6 @@
 # helm/envs/dev/ai-values.yaml
 image:
-  tag: "latest"
+  tag: "staging-latest"
 
 replicaCount: 1
 

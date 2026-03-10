@@ -3,7 +3,7 @@
 
 # 이미지 설정
 image:
-  repository: 624234316947.dkr.ecr.ap-northeast-2.amazonaws.com/ai-server
+  repository: 624234316947.dkr.ecr.ap-northeast-2.amazonaws.com/ai
   tag: "latest"
   pullPolicy: Always
 
