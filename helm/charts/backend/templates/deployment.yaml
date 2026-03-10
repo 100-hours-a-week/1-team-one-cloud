@@ -63,6 +63,14 @@ spec:
         value: {{ .Values.toleration }}
         effect: "NoSchedule"
 
+      # Firebase 키 파일 Volume 정의
+      volumes:
+      - name: firebase-key
+        secret:
+          secretName: {{ .Values.secretName }}
+          items:
+          - key: FIREBASE_KEY_JSON
+            path: firebase-key.json
 
       containers:
       - name: {{ .Chart.Name }}
@@ -72,6 +80,14 @@ spec:
 
         ports:
         - containerPort: 8080
+
+        # Firebase 키 파일 마운트
+        # /app/firebase-key.json 경로로 파일 생성
+        # FIRE_BASE_PATH=file:/app/firebase-key.json 이 경로로 읽힘
+        volumeMounts:
+        - name: firebase-key
+          mountPath: /app/firebase-key.json
+          subPath: firebase-key.json
 
         # ConfigMap (비민감 설정) + Secret (민감 정보) 전체 주입
         envFrom:

@@ -37,4 +37,4 @@ toleration: "dev-worker"
 
 # dev 환경에서 달라지는 config값만 오버라이드
 config:
-  springProfile: "dev"
+  iconUrl: "https://dev.raisedeveloper.com/icons/logo-192.png"
