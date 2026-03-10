@@ -108,7 +108,7 @@ spec:
             path: /api/actuator/health
             port: 8080
           periodSeconds: 5
-          failureThreshold: 30
+          failureThreshold: 60
 
         # /readiness: DB 연결, 외부 의존성 포함한 준비 상태 확인
         # 실패 시 Service 엔드포인트에서 제외 (트래픽 차단)
