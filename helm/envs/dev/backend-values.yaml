@@ -14,8 +14,8 @@ resources:
     cpu: "200m"
     memory: "512Mi"
   limits:
-    cpu: "500m"
-    memory: "768Mi"
+    cpu: "600m"
+    memory: "1Gi"
 
 # dev는 HPA 비활성화 
 hpa:
