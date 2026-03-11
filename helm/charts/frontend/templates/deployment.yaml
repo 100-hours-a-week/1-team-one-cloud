@@ -62,34 +62,33 @@ spec:
           value: {{ .Values.toleration }}
           effect: "NoSchedule"
 
-
       containers:
-        - name: {{ .Chart.Name }}
-          # values.yaml의 image 값 조합
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+      - name: {{ .Chart.Name }}
+        # values.yaml의 image 값 조합
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
 
-          ports:
-            - containerPort: 3000
+        ports:
+        - containerPort: 3000
 
-          # 환경변수X (빌드타임 주입)
+        # 환경변수X (빌드타임 주입)
 
-          # values.yaml의 resources 값 주입
-          resources:
-            {{- toYaml .Values.resources | nindent 10 }}
+        # values.yaml의 resources 값 주입
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
 
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 3000
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          failureThreshold: 5
 
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 3000
-            initialDelaySeconds: 20
-            periodSeconds: 10
-            failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          failureThreshold: 3

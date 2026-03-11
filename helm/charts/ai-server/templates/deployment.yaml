@@ -65,38 +65,37 @@ spec:
 
 
       containers:
-        - name: {{ .Chart.Name }}
-          # values.yaml의 image 값 조합
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+      - name: {{ .Chart.Name }}
+        # values.yaml의 image 값 조합
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
 
-          ports:
-            - containerPort: 8000
+        ports:
+        - containerPort: 8000
 
-          # ConfigMap (비민감 설정) + Secret (민감 정보) 전체 주입
-          envFrom:
-            - configMapRef:
-                name: {{ .Values.configMapName }}
-            - secretRef:
-                name: {{ .Values.secretName }}
+        # ConfigMap (비민감 설정) + Secret (민감 정보) 전체 주입
+        envFrom:
+        - configMapRef:
+            name: {{ .Values.configMapName }}
+        - secretRef:
+            name: {{ .Values.secretName }}
 
-          # values.yaml의 resources 값 주입
-          resources:
-            {{- toYaml .Values.resources | nindent 10 }}
+        # values.yaml의 resources 값 주입
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
 
-          readinessProbe:
-            httpGet:
-              path: /api/v1/health
-              port: 8000
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/v1/health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          failureThreshold: 3
 
-
-          livenessProbe:
-            httpGet:
-              path: /api/v1/health
-              port: 8000
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /api/v1/health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          failureThreshold: 3

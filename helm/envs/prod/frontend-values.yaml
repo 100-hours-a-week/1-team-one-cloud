@@ -1,2 +1,3 @@
+# helm/envs/prod/frontend-values.yaml
 image:
   tag: "production-latest"
