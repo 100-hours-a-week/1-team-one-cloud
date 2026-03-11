@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://kubernetes.github.io/cloud-provider-aws
     chart: aws-cloud-controller-manager
-    targetRevision: 1.35.0
+    targetRevision: 0.0.8
     helm:
       values: |
         args:
@@ -34,7 +34,7 @@ spec:
   source:
     repoURL: docker.io/envoyproxy
     chart: gateway-helm
-    targetRevision: v1.37.1
+    targetRevision: v1.7.1
   destination:
     server: https://kubernetes.default.svc
     namespace: envoy-gateway-system
