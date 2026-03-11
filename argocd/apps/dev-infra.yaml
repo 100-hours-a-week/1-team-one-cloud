@@ -1,26 +1,3 @@
-# argocd/apps/dev-envoy-gateway.yaml
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: dev-envoy-gateway
-  namespace: argocd
-spec:
-  project: dev-project
-  source:
-    # Envoy Gateway OCI Chart
-    repoURL: docker.io/envoyproxy
-    chart: gateway-helm
-    targetRevision: v1.7.0
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: envoy-gateway-system
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
----
 # argocd/apps/dev-gateway-config.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application

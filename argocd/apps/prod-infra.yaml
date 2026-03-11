@@ -45,6 +45,12 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true
+  ignoreDifferences:
+    - group: apiextensions.k8s.io
+      kind: CustomResourceDefinition
+      jsonPointers:
+        - /metadata/annotations/kubectl.kubernetes.io~1last-applied-configuration
 ---
 # argocd/apps/prod-gateway-config.yaml
 apiVersion: argoproj.io/v1alpha1
