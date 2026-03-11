@@ -10,9 +10,15 @@ spec:
       envoyDeployment:
         replicas: 2
         pod:
-          scheduling:
-            nodeSelector:
-              workload: prod
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: workload
+                    operator: In
+                    values:
+                    - prod
       envoyService:
         type: LoadBalancer
         annotations:

@@ -9,14 +9,20 @@ spec:
     kubernetes:
       envoyDeployment:
         pod:
-          scheduling:
-            nodeSelector:
-              workload: dev
-            tolerations:
-            - key: "dedicated"
-              operator: "Equal"
-              value: "dev-worker"
-              effect: "NoSchedule"
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: workload
+                    operator: In
+                    values:
+                    - dev
+          tolerations:
+          - key: "dedicated"
+            operator: "Equal"
+            value: "dev-worker"
+            effect: "NoSchedule"
       envoyService:
         type: LoadBalancer
         annotations:
