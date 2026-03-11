@@ -1,6 +1,6 @@
 # helm/envs/dev/ai-values.yaml
 image:
-  tag: "dev-latest"
+  tag: "dev-486842dc4148cf0f7e736ae4480a2bcdc6b0e77c"
 
 replicaCount: 1
 
