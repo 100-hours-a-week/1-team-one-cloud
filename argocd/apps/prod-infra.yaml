@@ -1,0 +1,66 @@
+# argocd/apps/prod-ccm.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prod-ccm
+  namespace: argocd
+spec:
+  project: prod-project
+  source:
+    repoURL: https://kubernetes.github.io/cloud-provider-aws
+    chart: aws-cloud-controller-manager
+    targetRevision: 1.35.0
+    helm:
+      values: |
+        args:
+          - --v=2
+          - --cloud-provider=aws
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+# argocd/apps/prod-envoy-gateway.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prod-envoy-gateway
+  namespace: argocd
+spec:
+  project: prod-project
+  source:
+    repoURL: docker.io/envoyproxy
+    chart: gateway-helm
+    targetRevision: v1.37.1
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: envoy-gateway-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+# argocd/apps/prod-gateway-config.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prod-gateway-config
+  namespace: argocd
+spec:
+  project: prod-project
+  source:
+    repoURL: https://github.com/100-hours-a-week/1-team-one-cloud.git
+    targetRevision: HEAD
+    path: kubernetes/gateway/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: envoy-gateway-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

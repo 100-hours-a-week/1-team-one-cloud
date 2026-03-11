@@ -58,5 +58,13 @@ config:
   host: "0.0.0.0"
   port: "8000"
   callbackUrl: "https://raisedeveloper.com/api/routines/callback"
-  exerciseApiUrl: "https://raisedeveloper.com/api/exercises"
-  qdrantUrl: ""  # 미정, 확정 후 채울 것
+    exerciseApiUrl: "https://raisedeveloper.com/api/exercises"
+    qdrantUrl: ""  # 미정, 확정 후 채울 것
+  
+  # Ingress (Gateway API) 설정
+  ingress:
+    enabled: false
+    gatewayName: prod-gateway
+    rules:
+      - path: /ai
+  
