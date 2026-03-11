@@ -59,4 +59,4 @@ config:
   port: "8000"
   callbackUrl: "https://raisedeveloper.com/api/routines/callback"
   exerciseApiUrl: "https://raisedeveloper.com/api/exercises"
-  qdrantUrl: ""  # 미정, 확정 후 채울 것
+  qdrantUrl: "http://10.1.40.249:6333"  # 미정, 확정 후 채울 것
