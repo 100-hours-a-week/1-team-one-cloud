@@ -57,7 +57,7 @@ spec:
   source:
     repoURL: https://github.com/100-hours-a-week/1-team-one-cloud.git
     targetRevision: HEAD
-    path: kubernetes/gateway/dev
+    path: k8s-infra/gateway/dev
   destination:
     server: https://kubernetes.default.svc
     namespace: envoy-gateway-system
