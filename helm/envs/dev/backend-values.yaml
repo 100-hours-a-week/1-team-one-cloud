@@ -38,3 +38,7 @@ toleration: "dev-worker"
 # dev 환경에서 달라지는 config값만 오버라이드
 config:
   iconUrl: "https://dev.raisedeveloper.com/icons/logo-192.png"
+
+# dev 환경 Ingress 오버라이드
+ingress:
+  gatewayName: dev-gateway

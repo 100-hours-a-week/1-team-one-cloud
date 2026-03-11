@@ -34,3 +34,7 @@ nodeSelector:
 
 # dev 노드 taint 허용
 toleration: "dev-worker"
+
+# dev 환경 Ingress 오버라이드
+ingress:
+  gatewayName: dev-gateway

@@ -49,3 +49,11 @@ nodeSelector:
 
 # prod 노드 taint 허용
 toleration: "prod-worker"
+
+# Ingress (Gateway API) 설정
+ingress:
+  enabled: true
+  gatewayName: prod-gateway
+  rules:
+    - path: /api/bff
+    - path: /
