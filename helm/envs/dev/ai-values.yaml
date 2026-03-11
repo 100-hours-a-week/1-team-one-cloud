@@ -1,16 +1,16 @@
 # helm/envs/dev/ai-values.yaml
 image:
-  tag: "staging-latest"
+  tag: "dev-latest"
 
 replicaCount: 1
 
 resources:
   requests:
-    cpu: "100m"
-    memory: "256Mi"
-  limits:
-    cpu: "400m"
+    cpu: "200m"
     memory: "512Mi"
+  limits:
+    cpu: "700m"
+    memory: "1024Mi"
 
 hpa:
   enabled: false
@@ -27,5 +27,7 @@ toleration: "dev-worker"
 
 config:
   appEnv: "dev"
+  metricsEnabled: "true"
   callbackUrl: "https://dev.raisedeveloper.com/api/routines/callback"
   exerciseApiUrl: "https://dev.raisedeveloper.com/api/exercises"
+  qdrantUrl: "http://10.1.40.234:6333"
