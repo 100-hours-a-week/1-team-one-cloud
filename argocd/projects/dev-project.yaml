@@ -13,10 +13,18 @@ spec:
 
   sourceRepos:
     - "https://github.com/100-hours-a-week/1-team-one-cloud.git"
+    - 'https://kubernetes.github.io/cloud-provider-aws'
+    - 'docker.io/envoyproxy'
 
   # dev-app 네임스페이스만 허용
   destinations:
     - namespace: dev-app
+      server: https://kubernetes.default.svc
+    - namespace: kube-system
+      server: https://kubernetes.default.svc
+    - namespace: envoy-gateway-system
+      server: https://kubernetes.default.svc
+    - namespace: gateway-system
       server: https://kubernetes.default.svc
 
   clusterResourceWhitelist:
