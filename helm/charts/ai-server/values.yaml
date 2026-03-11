@@ -62,9 +62,8 @@ config:
   qdrantUrl: "http://10.1.40.249:6333"  # 미정, 확정 후 채울 것
   
   # Ingress (Gateway API) 설정
-  ingress:
-    enabled: false
-    gatewayName: prod-gateway
-    rules:
-      - path: /ai
-  
+ingress:
+  enabled: false
+  gatewayName: prod-gateway
+  rules:
+    - path: /ai
