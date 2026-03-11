@@ -1,29 +1,3 @@
-# argocd/apps/dev-ccm.yaml
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: dev-ccm
-  namespace: argocd
-spec:
-  project: dev-project
-  source:
-    repoURL: https://kubernetes.github.io/cloud-provider-aws
-    chart: aws-cloud-controller-manager
-    targetRevision: 0.0.8 # 최근 안정 버전 권장
-    helm:
-      values: |
-        args:
-          - --v=2
-          - --cloud-provider=aws
-          - --configure-cloud-routes=false
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: kube-system # CCM은 kube-system에 위치
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
----
 # argocd/apps/dev-envoy-gateway.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
