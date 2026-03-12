@@ -1,3 +1,3 @@
 # helm/envs/prod/frontend-values.yaml
 image:
-  tag: "production-latest"
+  tag: "prod-a1c496664927f680270b8e5277ca58599400a7e6"
