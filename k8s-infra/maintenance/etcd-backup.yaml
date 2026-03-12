@@ -1,0 +1,63 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: etcd-s3-backup
+  namespace: kube-system
+spec:
+  schedule: "0 18 * * *" 
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          hostNetwork: true
+          nodeSelector:
+            node-role.kubernetes.io/control-plane: ""
+          tolerations:
+          - key: "node-role.kubernetes.io/control-plane"
+            operator: "Exists"
+            effect: "NoSchedule"
+          containers:
+          - name: etcd-backup
+            image: amazon/aws-cli:latest
+            command:
+            - /bin/bash
+            - -c
+            - |
+              # 1. 컨테이너 내부에서 etcdctl 바이너리 다운로드 (임시)
+              yum install -y gzip tar > /dev/null 2>&1
+              curl -sL https://github.com/etcd-io/etcd/releases/download/v3.6.8/etcd-v3.6.8-linux-amd64.tar.gz -o etcd.tar.gz
+              tar xzf etcd.tar.gz
+              mv etcd-v3.6.8-linux-amd64/etcdctl /usr/local/bin/
+
+              # 2. 타임스탬프 생성 및 스냅샷 파일명 지정
+              DATE=$(date +%Y-%m-%d-%H%M)
+              FILE_NAME=/tmp/etcd-snapshot-${DATE}.db
+              
+              # 3. 마스터 노드의 인증서를 활용하여 etcd 스냅샷 추출
+              export ETCDCTL_API=3
+              etcdctl --endpoints=https://127.0.0.1:2379 \
+                --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+                --cert=/etc/kubernetes/pki/etcd/healthcheck-client.crt \
+                --key=/etc/kubernetes/pki/etcd/healthcheck-client.key \
+                snapshot save ${FILE_NAME}
+
+              # 4. S3 버킷으로 업로드 (EC2의 IAM 권한을 그대로 물려받음)
+              echo "Uploading to S3 bucket: raise-developer-k8s-backup..."
+              aws s3 cp ${FILE_NAME} s3://raise-developer-k8s-backup/etcd-backups/etcd-snapshot-${DATE}.db
+              
+              echo "Backup completed successfully!"
+            volumeMounts:
+            - mountPath: /etc/kubernetes/pki/etcd
+              name: etcd-certs
+              readOnly: true
+          env:
+          - name: AWS_REGION
+            value: ap-northeast-2
+          restartPolicy: OnFailure
+          volumes:
+          - name: etcd-certs
+            hostPath:
+              path: /etc/kubernetes/pki/etcd
+              type: DirectoryOrCreate
