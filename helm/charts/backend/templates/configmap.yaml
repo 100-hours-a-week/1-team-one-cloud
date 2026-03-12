@@ -13,6 +13,7 @@ data:
   AI_SERVER_ROUTINE_API: {{ .Values.config.aiServerRoutineApi | quote }}
   AI_SERVER_ROUTINE_ASYNC_API: {{ .Values.config.aiServerRoutineAsyncApi | quote }}
   AI_SERVER_USER_PROFILE_API: {{ .Values.config.aiServerUserProfileApi | quote }}
+  AI_SERVER_SATISFACTION_API: {{ .Values.config.aiServerSatisfactionApi | quote }}
 
   # AWS S3
   STORAGE_PROVIDER: {{ .Values.config.storageProvider | quote }}

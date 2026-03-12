@@ -65,6 +65,7 @@ config:
   aiServerRoutineApi: "/api/v1/routines"
   aiServerRoutineAsyncApi: "/api/v2/routines"
   aiServerUserProfileApi: "/api/v2/update/users"
+  aiServerSatisfactionApi: "/api/v3/update/satisfaction"
   
   # Ingress (Gateway API) 설정
 ingress:
