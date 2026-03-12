@@ -3,7 +3,7 @@
 
 # 이미지 태그 (GitHub Actions가 자동 교체)
 image:
-  tag: "staging-latest"
+  tag: "dev-3c07fe381c318c5a03950be9b24fc7c63e3b529c"
 
 # dev는 워커 노드 1대라 replica 1개
 replicaCount: 1
