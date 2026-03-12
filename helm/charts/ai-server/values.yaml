@@ -17,8 +17,8 @@ resources:
     cpu: "200m"
     memory: "512Mi"
   limits:
-    cpu: "700m"
-    memory: "1024Mi"
+    cpu: "900m"
+    memory: "1.5Gi"
 
 # HPA 설정 (prod는 활성화)
 hpa:
