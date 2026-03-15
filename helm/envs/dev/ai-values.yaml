@@ -30,4 +30,4 @@ config:
   metricsEnabled: "true"
   callbackUrl: "https://dev.raisedeveloper.com/api/routines/callback"
   exerciseApiUrl: "https://dev.raisedeveloper.com/api/exercises"
-  qdrantUrl: "http://10.1.40.234:6333"
+  qdrantUrl: "http://10.1.1.12:6333"
