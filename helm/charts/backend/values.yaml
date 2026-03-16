@@ -73,4 +73,8 @@ ingress:
   gatewayName: prod-gateway
   rules:
     - path: /api
-  
+
+# OpenTelemetry 설정
+env:
+  - name: OTEL_JAVAAGENT_ENABLED
+    value: "false"

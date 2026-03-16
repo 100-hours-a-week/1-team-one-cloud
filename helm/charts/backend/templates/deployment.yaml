@@ -96,6 +96,12 @@ spec:
         - secretRef:
             name: {{ .Values.secretName }}
 
+        # values.yaml의 env 값 주입
+        {{- if .Values.env }}
+        env:
+          {{- toYaml .Values.env | nindent 8 }}
+        {{- end }}
+
         # values.yaml의 resources 값 주입
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
