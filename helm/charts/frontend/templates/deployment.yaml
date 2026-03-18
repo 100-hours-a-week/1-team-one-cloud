@@ -71,7 +71,10 @@ spec:
         ports:
         - containerPort: 3000
 
-        # 환경변수X (빌드타임 주입)
+        # Secret (민감 정보) 전체 주입
+        envFrom:
+        - secretRef:
+            name: {{ .Values.secretName }}
 
         # values.yaml의 resources 값 주입
         resources:
