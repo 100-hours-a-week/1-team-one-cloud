@@ -32,7 +32,7 @@ hpa:
   minReplicas: 2
   maxReplicas: 8
   cpuUtilization: 60
-  memoryUtilization: 80
+  memoryUtilization: 85
 
 # PDB 설정
 pdb:
