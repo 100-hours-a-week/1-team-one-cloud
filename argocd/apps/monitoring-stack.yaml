@@ -21,6 +21,7 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true
 ---
 # argocd/apps/monitoring-prometheus.yaml
 apiVersion: argoproj.io/v1alpha1
@@ -45,6 +46,7 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true
 ---
 # argocd/apps/monitoring-alloy.yaml
 apiVersion: argoproj.io/v1alpha1
@@ -69,6 +71,7 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true
 ---
 # argocd/apps/monitoring-grafana.yaml
 apiVersion: argoproj.io/v1alpha1
@@ -93,3 +96,4 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true

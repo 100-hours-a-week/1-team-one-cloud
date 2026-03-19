@@ -1,15 +1,16 @@
+{{- $root := . -}}
+{{- range $path, $_ :=  .Files.Glob "dashboards/*.json" }}
+{{- $filename := base $path }}
+{{- $cmName := printf "%s-dashboard-%s" $root.Chart.Name (trimSuffix ".json" $filename) }}
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Chart.Name }}-dashboards
-  namespace: {{ .Release.Namespace }}
+  name: {{ $cmName }}
+  namespace: {{ $root.Release.Namespace }}
+  labels:
+    grafana_dashboard: "1"
 data:
-  # 주요 대시보드 4개를 각각 개별 파일로 관리한다.
-  node-exporter-full.json: |-
-{{ .Files.Get "dashboards/node-exporter-full.json" | indent 4 }}
-  ai-monitoring.json: |-
-{{ .Files.Get "dashboards/ai-monitoring.json" | indent 4 }}
-  be-monitoring.json: |-
-{{ .Files.Get "dashboards/be-monitoring.json" | indent 4 }}
-  db-redis-monitoring.json: |-
-{{ .Files.Get "dashboards/db-redis-monitoring.json" | indent 4 }}
+  {{ $filename }}: |-
+{{ $root.Files.Get $path | indent 4 }}
+{{- end }}
