@@ -17,6 +17,7 @@ spec:
     - 'https://kubernetes.github.io/cloud-provider-aws'
     - 'docker.io/envoyproxy'
     - 'https://kubernetes.github.io/autoscaler'
+    - 'https://kubernetes-sigs.github.io/aws-ebs-csi-driver'
 
   # 배포 가능한 클러스터 및 네임스페이스 허용 목록
   # kubernetes.default.svc = ArgoCD가 설치된 같은 클러스터 내부
@@ -28,6 +29,8 @@ spec:
     - namespace: envoy-gateway-system
       server: https://kubernetes.default.svc
     - namespace: gateway-system
+      server: https://kubernetes.default.svc
+    - namespace: monitoring
       server: https://kubernetes.default.svc
 
   # 클러스터 레벨 리소스 허용 (Namespace, CRD 등)
