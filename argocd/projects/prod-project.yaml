@@ -16,6 +16,7 @@ spec:
     - "https://github.com/100-hours-a-week/1-team-one-cloud.git"
     - 'https://kubernetes.github.io/cloud-provider-aws'
     - 'docker.io/envoyproxy'
+    - 'https://kubernetes.github.io/autoscaler'
 
   # 배포 가능한 클러스터 및 네임스페이스 허용 목록
   # kubernetes.default.svc = ArgoCD가 설치된 같은 클러스터 내부
