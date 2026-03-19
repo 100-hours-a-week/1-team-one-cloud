@@ -15,9 +15,9 @@ replicaCount: 2
 resources:
   requests:
     cpu: "200m"
-    memory: "800m"
+    memory: "1.2Gi"
   limits:
-    cpu: "1.2Gi"
+    cpu: "900m"
     memory: "1.5Gi"
 
 # HPA 설정 (prod는 활성화)
