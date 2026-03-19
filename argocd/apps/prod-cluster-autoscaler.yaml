@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prod-cluster-autoscaler
+  namespace: argocd
+  annotations:
+    notifications.argoproj.io/subscribe.on-health-degraded.discord: ""
+    notifications.argoproj.io/subscribe.on-sync-failed.discord: ""
+    notifications.argoproj.io/subscribe.on-synced.discord: ""
+spec:
+  project: prod-project
+  source:
+    repoURL: https://kubernetes.github.io/autoscaler
+    chart: cluster-autoscaler
+    targetRevision: 9.46.0
+    helm:
+      values: |
+        autoDiscovery:
+          clusterName: kubernetes
+        awsRegion: ap-northeast-2
+        rbac:
+          create: true
+          serviceAccount:
+            create: true
+        extraArgs:
+          balance-similar-node-groups: true
+          skip-nodes-with-system-pods: false
+          scale-down-delay-after-add: 10m
+          scale-down-unneeded-time: 10m
+        nodeSelector:
+          role: prod-worker
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: prod-worker
+            effect: NoSchedule
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
