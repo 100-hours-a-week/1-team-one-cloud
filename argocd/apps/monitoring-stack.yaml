@@ -1,8 +1,8 @@
-# argocd/apps/prod-monitoring-loki.yaml
+# argocd/apps/monitoring-loki.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: prod-monitoring-loki
+  name: monitoring-loki
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
@@ -22,11 +22,11 @@ spec:
     syncOptions:
       - CreateNamespace=true
 ---
-# argocd/apps/prod-monitoring-prometheus.yaml
+# argocd/apps/monitoring-prometheus.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: prod-monitoring-prometheus
+  name: monitoring-prometheus
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
@@ -46,11 +46,11 @@ spec:
     syncOptions:
       - CreateNamespace=true
 ---
-# argocd/apps/prod-monitoring-alloy.yaml
+# argocd/apps/monitoring-alloy.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: prod-monitoring-alloy
+  name: monitoring-alloy
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
@@ -70,11 +70,11 @@ spec:
     syncOptions:
       - CreateNamespace=true
 ---
-# argocd/apps/prod-monitoring-grafana.yaml
+# argocd/apps/monitoring-grafana.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: prod-monitoring-grafana
+  name: monitoring-grafana
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "3"
