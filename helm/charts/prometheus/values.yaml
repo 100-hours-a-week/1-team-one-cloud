@@ -1,0 +1,22 @@
+# helm/charts/prometheus/values.yaml
+image:
+  repository: prom/prometheus
+  tag: v3.1.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 9090
+
+persistence:
+  size: 20Gi
+  storageClassName: gp3
+
+nodeSelector:
+  node-role.kubernetes.io/monitoring: ""
+
+tolerations:
+  - key: "dedicated"
+    operator: "Equal"
+    value: "monitoring"
+    effect: "NoSchedule"

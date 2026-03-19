@@ -1,0 +1,12 @@
+# helm/charts/alloy/values.yaml
+image:
+  repository: grafana/alloy
+  tag: "v1.6.1"
+  pullPolicy: IfNotPresent
+
+alloy:
+  lokiUrl: "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
+  prometheusUrl: "http://prometheus.monitoring.svc.cluster.local:9090/api/v1/write"
+
+tolerations:
+  - operator: "Exists" # 모든 노드(Taint 포함)에 배포

@@ -1,0 +1,36 @@
+# helm/charts/grafana/values.yaml
+image:
+  repository: grafana/grafana
+  tag: 11.5.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 3000
+
+nodeSelector:
+  node-role.kubernetes.io/monitoring: ""
+
+tolerations:
+  - key: "dedicated"
+    operator: "Equal"
+    value: "monitoring"
+    effect: "NoSchedule"
+
+# 대시보드 프로비저닝 설정
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards
+
+datasources:
+  lokiUrl: "http://loki.monitoring.svc.cluster.local:3100"
+  prometheusUrl: "http://prometheus.monitoring.svc.cluster.local:9090"

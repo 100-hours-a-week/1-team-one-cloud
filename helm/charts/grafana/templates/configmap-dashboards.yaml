@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-dashboards
+  namespace: {{ .Release.Namespace }}
+data:
+  # 주요 대시보드 4개를 각각 개별 파일로 관리한다.
+  node-exporter-full.json: |-
+{{ .Files.Get "dashboards/node-exporter-full.json" | indent 4 }}
+  ai-monitoring.json: |-
+{{ .Files.Get "dashboards/ai-monitoring.json" | indent 4 }}
+  be-monitoring.json: |-
+{{ .Files.Get "dashboards/be-monitoring.json" | indent 4 }}
+  db-redis-monitoring.json: |-
+{{ .Files.Get "dashboards/db-redis-monitoring.json" | indent 4 }}

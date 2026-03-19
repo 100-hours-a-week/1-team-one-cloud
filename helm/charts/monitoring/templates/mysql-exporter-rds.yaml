@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-exporter-rds
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-exporter-rds
+  template:
+    metadata:
+      labels:
+        app: mysql-exporter-rds
+    spec:
+      containers:
+        - name: mysql-exporter
+          image: prom/mysqld-exporter:v0.15.0
+          env:
+            - name: RDS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: monitoring-secrets
+                  key: RDS_USERNAME
+            - name: RDS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: monitoring-secrets
+                  key: RDS_PASSWORD
+            - name: RDS_HOSTNAME
+              valueFrom:
+                secretKeyRef:
+                  name: monitoring-secrets
+                  key: RDS_HOSTNAME
+            - name: DATA_SOURCE_NAME
+              value: "$(RDS_USERNAME):$(RDS_PASSWORD)@($(RDS_HOSTNAME):3306)/"
+          ports:
+            - containerPort: 9104
+              name: metrics
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-exporter-rds
+  namespace: monitoring
+spec:
+  ports:
+    - port: 9104
+      targetPort: metrics
+  selector:
+    app: mysql-exporter-rds

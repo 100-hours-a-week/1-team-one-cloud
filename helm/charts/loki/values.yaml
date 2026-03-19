@@ -1,0 +1,26 @@
+# helm/charts/loki/values.yaml
+image:
+  repository: grafana/loki
+  tag: "3.0.0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 3100
+
+storage:
+  s3Bucket: "raise-developer-k8s-backup"
+  region: "ap-northeast-2"
+
+persistence:
+  size: 10Gi
+  storageClassName: gp3
+
+nodeSelector:
+  node-role.kubernetes.io/monitoring: ""
+
+tolerations:
+  - key: "dedicated"
+    operator: "Equal"
+    value: "monitoring"
+    effect: "NoSchedule"

@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ .Chart.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      serviceAccountName: {{ .Chart.Name }}
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
+      containers:
+        - name: alloy
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          env:
+            - name: DEV_DB_IP
+              valueFrom:
+                secretKeyRef:
+                  name: monitoring-secrets
+                  key: DEV_DB_IP
+            - name: DEV_REDIS_IP
+              valueFrom:
+                secretKeyRef:
+                  name: monitoring-secrets
+                  key: DEV_REDIS_IP
+            - name: PROD_REDIS_IP
+              valueFrom:
+                secretKeyRef:
+                  name: monitoring-secrets
+                  key: PROD_REDIS_IP
+          args:
+            - run
+            - /etc/alloy/config.alloy
+            - --storage.path=/var/lib/alloy/data
+            - --server.http.listen-addr=0.0.0.0:12345
+          ports:
+            - containerPort: 12345
+              name: http
+          volumeMounts:
+            - name: config
+              mountPath: /etc/alloy
+            - name: logs
+              mountPath: /var/log
+            - name: containers
+              mountPath: /var/lib/docker/containers
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Chart.Name }}-config
+        - name: logs
+          hostPath:
+            path: /var/log
+        - name: containers
+          hostPath:
+            path: /var/lib/docker/containers

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-providers
+  namespace: {{ .Release.Namespace }}
+data:
+  {{- range $key, $value := .Values.dashboardProviders }}
+  {{ $key }}: {{ toYaml $value | nindent 4 }}
+  {{- end }}
