@@ -32,7 +32,7 @@ spec:
     metadata:
       labels:
         app: {{ .Chart.Name }}
-      annotaions:
+      annotations:
         prometheus.io/scrape: "true"
 
     spec:
