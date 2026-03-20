@@ -3,7 +3,7 @@
 
 # 이미지 태그 (GitHub Actions가 자동 교체)
 image:
-  tag: "dev-b8fe6368247ee422bc7d957e506f77d1c6b9ac3b"
+  tag: "dev-4dcef7df0a5eb61a2ad1d3578776131eb41a2603"
 
 # dev는 워커 노드 1대라 replica 1개
 replicaCount: 1
