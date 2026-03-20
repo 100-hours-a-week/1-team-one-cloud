@@ -4,7 +4,7 @@ metadata:
   name: {{ .Chart.Name }}-config
 data:
   config.alloy: |
-    // 로그 수집: /var/log/containers/*.log
+    // 로그 수집
     local.file_match "pods" {
       path_targets = [
         { "__address__" = "localhost", "__path__" = "/var/log/containers/*.log" },
@@ -24,17 +24,21 @@ data:
       }
     }
 
-    // --- 메트릭 수집: Kubelet + cAdvisor ---
+    // --- 메트릭 수집: Kubelet ---
     discovery.kubernetes "nodes" {
       role = "node"
     }
 
     discovery.relabel "node_labels" {
       targets = discovery.kubernetes.nodes.targets
-      // 자기 노드만 수집
+      // 근본 해결: 정규표현식이 아닌 정확한 문자열 비교를 위해 리터럴 매칭 유도
       rule {
         source_labels = ["__meta_kubernetes_node_name"]
-        regex         = sys.env("NODE_NAME")
+        target_label  = "node_name"
+      }
+      rule {
+        source_labels = ["node_name"]
+        regex         = "^" + sys.env("NODE_NAME") + "$"
         action        = "keep"
       }
     }
@@ -47,21 +51,14 @@ data:
       forward_to = [prometheus.remote_write.default.receiver]
     }
 
-    // --- 메트릭 수집: 외부 DB 및 공통 서비스 (중복 수집 방지) ---
-    // 특정 노드(예: 첫 번째 모니터링 노드) 하나에서만 공통 타겟을 긁도록 설정하거나,
-    // 간단하게 모든 노드에서 긁되 중복되지 않도록 hash를 사용합니다.
-    // 여기서는 가장 명확하게 '특정 노드에 떠 있는 Alloy'에게만 역할을 줍니다.
-    
+    // --- 메트릭 수집: 외부 DB (Clustering 활성화로 중복 제거) ---
     prometheus.scrape "mysql" {
       targets = [
-        { "__address__" = sys.env("DEV_DB_IP") + ":9104", "environment" = "dev", "role" = "db", "application" = "mysql", "node_filter" = "shared" },
-        { "__address__" = "mysql-exporter-rds.monitoring.svc:9104", "environment" = "production", "role" = "db", "application" = "mysql", "node_filter" = "shared" },
+        { "__address__" = sys.env("DEV_DB_IP") + ":9104", "environment" = "dev", "role" = "db", "application" = "mysql" },
+        { "__address__" = "mysql-exporter-rds.monitoring.svc:9104", "environment" = "production", "role" = "db", "application" = "mysql" },
       ]
       forward_to = [prometheus.remote_write.default.receiver]
-      // 공유 타겟은 모든 Alloy가 아닌 특정 노드 하나에서만 처리되도록 필터링 (Hash 사용)
-      clustering {
-        enabled = true
-      }
+      clustering { enabled = true }
     }
 
     prometheus.scrape "redis" {
@@ -70,12 +67,10 @@ data:
         { "__address__" = sys.env("PROD_REDIS_IP") + ":9121", "environment" = "production", "role" = "db", "application" = "redis" },
       ]
       forward_to = [prometheus.remote_write.default.receiver]
-      clustering {
-        enabled = true
-      }
+      clustering { enabled = true }
     }
 
-    // --- 메트릭 수집: 앱 파드 자동 발견 및 라벨링 ---
+    // --- 메트릭 수집: 파드 ---
     discovery.kubernetes "pods" {
       role = "pod"
     }
@@ -83,14 +78,17 @@ data:
     discovery.relabel "pod_labels" {
       targets = discovery.kubernetes.pods.targets
       
-      // 근본 해결: 자기 노드에 있는 파드만 수집 (중복 수집 방지)
+      // 근본 해결: 자기 노드에 있는 파드만 수집 (정확한 매칭)
       rule {
         source_labels = ["__meta_kubernetes_pod_node_name"]
-        regex         = sys.env("NODE_NAME")
+        target_label  = "pod_node_name"
+      }
+      rule {
+        source_labels = ["pod_node_name"]
+        regex         = "^" + sys.env("NODE_NAME") + "$"
         action        = "keep"
       }
 
-      // 네임스페이스를 environment 라벨로 변환
       rule {
         source_labels = ["__meta_kubernetes_namespace"]
         regex         = "prod-app"

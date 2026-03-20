@@ -38,11 +38,12 @@ spec:
                 fieldRef:
                   fieldPath: spec.nodeName
             args:
-
             - run
             - /etc/alloy/config.alloy
             - --storage.path=/var/lib/alloy/data
             - --server.http.listen-addr=0.0.0.0:12345
+            - --cluster.enabled=true
+            - --cluster.join-addresses=alloy.monitoring.svc.cluster.local
           ports:
             - containerPort: 12345
               name: http
