@@ -32,6 +32,9 @@ spec:
     metadata:
       labels:
         app: {{ .Chart.Name }}
+      annotaions:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
 
     spec:
       # values.yaml의 nodeSelector 값 주입

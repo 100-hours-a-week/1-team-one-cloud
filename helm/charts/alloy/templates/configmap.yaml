@@ -4,135 +4,89 @@ metadata:
   name: {{ .Chart.Name }}-config
 data:
   config.alloy: |
-    // --- 로그 수집 ---
+    // --- 로그 수집 (전 노드 필수) ---
     local.file_match "pods" {
-      path_targets = [
-        { "__address__" = "localhost", "__path__" = "/var/log/containers/*.log" },
-      ]
+      path_targets = [{ "__address__" = "localhost", "__path__" = "/var/log/containers/*.log" }]
     }
-
     loki.source.file "pods" {
-      targets    = local.file_match.pods.targets
+      targets = local.file_match.pods.targets
       forward_to = [loki.write.default.receiver]
     }
-
     loki.write "default" {
-      endpoint {
-        url = "{{ .Values.alloy.lokiUrl }}"
-        batch_wait = "1s"
-        batch_size = "512KB"
-      }
+      endpoint { url = "{{ .Values.alloy.lokiUrl }}" }
     }
 
     // --- 메트릭 수집: Kubelet ---
-    discovery.kubernetes "nodes" {
-      role = "node"
-    }
-
+    discovery.kubernetes "nodes" { role = "node" }
     discovery.relabel "node_labels" {
       targets = discovery.kubernetes.nodes.targets
       rule {
         source_labels = ["__meta_kubernetes_node_name"]
-        target_label  = "node_name"
-      }
-      rule {
-        source_labels = ["node_name"]
-        regex         = "^" + sys.env("NODE_NAME") + "$"
-        action        = "keep"
+        regex = "^" + sys.env("NODE_NAME") + "$"
+        action = "keep"
       }
     }
-
     prometheus.scrape "kubelet" {
       targets = discovery.relabel.node_labels.output
-      scheme  = "https"
+      scheme = "https"
       tls_config { insecure_skip_verify = true }
       bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
       forward_to = [prometheus.remote_write.default.receiver]
     }
 
-    // --- 메트릭 수집: 파드 ---
-    discovery.kubernetes "pods" {
-      role = "pod"
-    }
-
+    // --- 메트릭 수집 ---
+    discovery.kubernetes "pods" { role = "pod" }
     discovery.relabel "pod_labels" {
       targets = discovery.kubernetes.pods.targets
       
-      // 중복 수집 방지
+      // prometheus.io/scrape=true 인 파드만 수집하고 나머지는 무시
+      rule {
+        source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scrape"]
+        regex = "true"
+        action = "keep"
+      }
+
+      // 담당 노드 필터링
       rule {
         source_labels = ["__meta_kubernetes_pod_node_name"]
-        regex         = "^" + sys.env("NODE_NAME") + "$"
-        action        = "keep"
+        regex = "^" + sys.env("NODE_NAME") + "$"
+        action = "keep"
       }
 
-      // 프론트엔드 제외
+      // 백엔드/AI 경로 개별 설정
       rule {
         source_labels = ["__meta_kubernetes_pod_label_app"]
-        regex         = "frontend"
-        action        = "drop"
+        regex = "backend"
+        target_label = "__metrics_path__"
+        replacement = "/api/actuator/prometheus"
       }
 
-      // 백엔드
-      rule {
-        source_labels = ["__meta_kubernetes_pod_label_app"]
-        regex         = "backend"
-        target_label  = "__metrics_path__"
-        replacement   = "/api/actuator/prometheus"
-      }
-
-      // AI
-      rule {
-        source_labels = ["__meta_kubernetes_pod_label_app"]
-        regex         = "ai-server"
-        target_label  = "__metrics_path__"
-        replacement   = "/metrics"
-      }
-
-      // 라벨링 표준화
+      // 라벨링
       rule {
         source_labels = ["__meta_kubernetes_namespace"]
-        regex         = "prod-app"
-        target_label  = "environment"
-        replacement   = "production"
-      }
-      rule {
-        source_labels = ["__meta_kubernetes_namespace"]
-        regex         = "dev-app"
-        target_label  = "environment"
-        replacement   = "dev"
+        target_label = "namespace"
       }
       rule {
         source_labels = ["__meta_kubernetes_pod_label_app"]
-        target_label  = "application"
+        target_label = "application"
       }
     }
 
     prometheus.scrape "pods" {
-      targets    = discovery.relabel.pod_labels.output
+      targets = discovery.relabel.pod_labels.output
       forward_to = [prometheus.remote_write.default.receiver]
     }
 
-    // --- 메트릭 수집: 외부 DB (Clustering) ---
+    // --- 메트릭 수집: 외부 DB (MySQL/Redis) ---
     prometheus.scrape "mysql" {
       targets = [
-        { "__address__" = sys.env("DEV_DB_IP") + ":9104", "environment" = "dev", "role" = "db", "application" = "mysql" },
-        { "__address__" = "mysql-exporter-rds.monitoring.svc:9104", "environment" = "production", "role" = "db", "application" = "mysql" },
-      ]
-      forward_to = [prometheus.remote_write.default.receiver]
-      clustering { enabled = true }
-    }
-
-    prometheus.scrape "redis" {
-      targets = [
-        { "__address__" = sys.env("DEV_REDIS_IP") + ":9121", "environment" = "dev", "role" = "db", "application" = "redis" },
-        { "__address__" = sys.env("PROD_REDIS_IP") + ":9121", "environment" = "production", "role" = "db", "application" = "redis" },
+        { "__address__" = sys.env("DEV_DB_IP") + ":9104", "environment" = "dev", "application" = "mysql" },
+        { "__address__" = "mysql-exporter-rds.monitoring.svc:9104", "environment" = "production", "application" = "mysql" },
       ]
       forward_to = [prometheus.remote_write.default.receiver]
       clustering { enabled = true }
     }
 
     prometheus.remote_write "default" {
-      endpoint {
-        url = "{{ .Values.alloy.prometheusUrl }}"
-      }
+      endpoint { url = "{{ .Values.alloy.prometheusUrl }}" }
     }
