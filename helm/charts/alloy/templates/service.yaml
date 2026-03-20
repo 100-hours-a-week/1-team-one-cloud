@@ -5,10 +5,19 @@ metadata:
   labels:
     app: {{ .Chart.Name }}
 spec:
-  clusterIP: None  # Headless Service
+  clusterIP: None
+  publishNotReadyAddresses: true
   selector:
     app: {{ .Chart.Name }}
   ports:
     - name: http
       port: 12345
       targetPort: 12345
+    - name: gossip-tcp
+      port: 7946
+      targetPort: 7946
+      protocol: TCP
+    - name: gossip-udp
+      port: 7946
+      targetPort: 7946
+      protocol: UDP

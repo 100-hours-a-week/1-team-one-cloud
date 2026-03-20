@@ -52,6 +52,12 @@ spec:
           ports:
             - containerPort: 12345
               name: http
+            - containerPort: 7946
+              name: gossip-tcp
+              protocol: TCP
+            - containerPort: 7946
+              name: gossip-udp
+              protocol: UDP
           volumeMounts:
             - name: config
               mountPath: /etc/alloy
