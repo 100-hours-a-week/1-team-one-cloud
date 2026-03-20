@@ -24,12 +24,12 @@ spec:
             - name: GF_SECURITY_ADMIN_USER
               valueFrom:
                 secretKeyRef:
-                  name: monitoring-secret
+                  name: grafana-admin-secret
                   key: admin-user
             - name: GF_SECURITY_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: monitoring-secret
+                  name: grafana-admin-secret
                   key: admin-password
           ports:
             - containerPort: 3000
@@ -39,7 +39,21 @@ spec:
               mountPath: /etc/grafana/provisioning/datasources
             - name: providers
               mountPath: /etc/grafana/provisioning/dashboards
-            - name: dashboards
+            - name: sc-dashboard-volume
+              mountPath: /var/lib/grafana/dashboards
+        - name: grafana-sc-dashboard
+          image: kiwigrid/k8s-sidecar:1.28.0
+          env:
+            - name: METHOD
+              value: WATCH
+            - name: LABEL
+              value: grafana_dashboard
+            - name: FOLDER
+              value: /var/lib/grafana/dashboards
+            - name: RESOURCE
+              value: configmap
+          volumeMounts:
+            - name: sc-dashboard-volume
               mountPath: /var/lib/grafana/dashboards
       volumes:
         - name: datasources
@@ -48,6 +62,6 @@ spec:
         - name: providers
           configMap:
             name: {{ .Chart.Name }}-providers
-        - name: dashboards
-          configMap:
-            name: {{ .Chart.Name }}-dashboards
+        - name: sc-dashboard-volume
+          emptyDir: {}
+
