@@ -41,7 +41,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-            args:
+          args:
             - run
             - /etc/alloy/config.alloy
             - --storage.path=/var/lib/alloy/data
@@ -49,7 +49,6 @@ spec:
             - --cluster.enabled=true
             - --cluster.join-addresses=alloy.monitoring.svc.cluster.local
             - --cluster.advertise-address=$(POD_IP):12345
-
           ports:
             - containerPort: 12345
               name: http
