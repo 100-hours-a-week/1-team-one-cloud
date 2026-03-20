@@ -4,7 +4,7 @@ metadata:
   name: {{ .Chart.Name }}-config
 data:
   config.alloy: |
-    // --- 로그 수집 (전 노드 필수) ---
+    // --- 로그 수집 ---
     local.file_match "pods" {
       path_targets = [{ "__address__" = "localhost", "__path__" = "/var/log/containers/*.log" }]
     }
@@ -22,8 +22,12 @@ data:
       targets = discovery.kubernetes.nodes.targets
       rule {
         source_labels = ["__meta_kubernetes_node_name"]
-        regex = "^" + sys.env("NODE_NAME") + "$"
-        action = "keep"
+        target_label  = "node_name"
+      }
+      rule {
+        source_labels = ["node_name"]
+        regex         = "^" + sys.env("NODE_NAME") + "$"
+        action        = "keep"
       }
     }
     prometheus.scrape "kubelet" {
@@ -34,12 +38,12 @@ data:
       forward_to = [prometheus.remote_write.default.receiver]
     }
 
-    // --- 메트릭 수집 ---
+    // --- 메트릭 수집: 파드 (Annotation 필터링 적용) ---
     discovery.kubernetes "pods" { role = "pod" }
     discovery.relabel "pod_labels" {
       targets = discovery.kubernetes.pods.targets
       
-      // prometheus.io/scrape=true 인 파드만 수집하고 나머지는 무시
+      // prometheus.io/scrape=true 인 파드만 수집
       rule {
         source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scrape"]
         regex = "true"
@@ -49,26 +53,34 @@ data:
       // 담당 노드 필터링
       rule {
         source_labels = ["__meta_kubernetes_pod_node_name"]
-        regex = "^" + sys.env("NODE_NAME") + "$"
-        action = "keep"
+        regex         = "^" + sys.env("NODE_NAME") + "$"
+        action        = "keep"
       }
 
-      // 백엔드/AI 경로 개별 설정
+      // 백엔드 경로 자동 설정
       rule {
         source_labels = ["__meta_kubernetes_pod_label_app"]
-        regex = "backend"
-        target_label = "__metrics_path__"
-        replacement = "/api/actuator/prometheus"
+        regex         = "backend"
+        target_label  = "__metrics_path__"
+        replacement   = "/api/actuator/prometheus"
       }
 
       // 라벨링
       rule {
         source_labels = ["__meta_kubernetes_namespace"]
-        target_label = "namespace"
+        regex         = "prod-app"
+        target_label  = "environment"
+        replacement   = "production"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        regex         = "dev-app"
+        target_label  = "environment"
+        replacement   = "dev"
       }
       rule {
         source_labels = ["__meta_kubernetes_pod_label_app"]
-        target_label = "application"
+        target_label  = "application"
       }
     }
 
@@ -77,11 +89,21 @@ data:
       forward_to = [prometheus.remote_write.default.receiver]
     }
 
-    // --- 메트릭 수집: 외부 DB (MySQL/Redis) ---
+    // --- 메트릭 수집: 외부 DB (MySQL) ---
     prometheus.scrape "mysql" {
       targets = [
         { "__address__" = sys.env("DEV_DB_IP") + ":9104", "environment" = "dev", "application" = "mysql" },
         { "__address__" = "mysql-exporter-rds.monitoring.svc:9104", "environment" = "production", "application" = "mysql" },
+      ]
+      forward_to = [prometheus.remote_write.default.receiver]
+      clustering { enabled = true }
+    }
+
+    // --- 메트릭 수집: 외부 Redis ---
+    prometheus.scrape "redis" {
+      targets = [
+        { "__address__" = sys.env("DEV_REDIS_IP") + ":9121", "environment" = "dev", "application" = "redis" },
+        { "__address__" = sys.env("PROD_REDIS_IP") + ":9121", "environment" = "production", "application" = "redis" },
       ]
       forward_to = [prometheus.remote_write.default.receiver]
       clustering { enabled = true }
