@@ -20,17 +20,17 @@ spec:
             - name: RDS_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: monitoring-secrets
+                  name: monitoring-secret
                   key: RDS_USERNAME
             - name: RDS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: monitoring-secrets
+                  name: monitoring-secret
                   key: RDS_PASSWORD
             - name: RDS_HOSTNAME
               valueFrom:
                 secretKeyRef:
-                  name: monitoring-secrets
+                  name: monitoring-secret
                   key: RDS_HOSTNAME
             - name: DATA_SOURCE_NAME
               value: "$(RDS_USERNAME):$(RDS_PASSWORD)@($(RDS_HOSTNAME):3306)/"

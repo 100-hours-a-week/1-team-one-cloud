@@ -21,17 +21,17 @@ spec:
             - name: DEV_DB_IP
               valueFrom:
                 secretKeyRef:
-                  name: monitoring-secrets
+                  name: monitoring-secret
                   key: DEV_DB_IP
             - name: DEV_REDIS_IP
               valueFrom:
                 secretKeyRef:
-                  name: monitoring-secrets
+                  name: monitoring-secret
                   key: DEV_REDIS_IP
             - name: PROD_REDIS_IP
               valueFrom:
                 secretKeyRef:
-                  name: monitoring-secrets
+                  name: monitoring-secret
                   key: PROD_REDIS_IP
           args:
             - run
