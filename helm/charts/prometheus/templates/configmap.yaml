@@ -8,6 +8,11 @@ data:
       scrape_interval: 15s
       evaluation_interval: 15s
 
+    # 뒤늦게 도착하는 샘플(최대 30분)을 허용하도록 설정
+    storage:
+      tsdb:
+        out_of_order_time_window: 30m
+
     scrape_configs:
       - job_name: 'prometheus'
         static_configs:
