@@ -86,6 +86,13 @@ spec:
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
 
+        startupProbe:
+          httpGet:
+            path: /api/v1/health
+            port: 8000
+          failureThreshold: 12      # 12 * 5초 = 최대 60초 대기
+          periodSeconds: 5
+
         readinessProbe:
           httpGet:
             path: /api/v1/health
