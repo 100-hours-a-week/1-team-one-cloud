@@ -14,6 +14,11 @@ spec:
         app: {{ .Chart.Name }}
     spec:
       serviceAccountName: {{ .Chart.Name }}
+      securityContext:
+        fsGroup: 65534
+        runAsGroup: 65534
+        runAsNonRoot: true
+        runAsUser: 65534
       nodeSelector:
         {{- toYaml .Values.nodeSelector | nindent 8 }}
       tolerations:
