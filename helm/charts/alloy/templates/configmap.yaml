@@ -25,31 +25,54 @@ data:
     }
 
     // --- 메트릭 수집: Kubelet + cAdvisor ---
-    prometheus.scrape "kubelet" {
+    discovery.kubernetes "nodes" {
+      role = "node"
+    }
+
+    discovery.relabel "node_labels" {
       targets = discovery.kubernetes.nodes.targets
+      // 자기 노드만 수집
+      rule {
+        source_labels = ["__meta_kubernetes_node_name"]
+        regex         = sys.env("NODE_NAME")
+        action        = "keep"
+      }
+    }
+
+    prometheus.scrape "kubelet" {
+      targets = discovery.relabel.node_labels.output
       scheme  = "https"
       tls_config { insecure_skip_verify = true }
       bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
       forward_to = [prometheus.remote_write.default.receiver]
     }
 
-    // --- 메트릭 수집: 외부 DB (MySQL / RDS) ---
+    // --- 메트릭 수집: 외부 DB 및 공통 서비스 (중복 수집 방지) ---
+    // 특정 노드(예: 첫 번째 모니터링 노드) 하나에서만 공통 타겟을 긁도록 설정하거나,
+    // 간단하게 모든 노드에서 긁되 중복되지 않도록 hash를 사용합니다.
+    // 여기서는 가장 명확하게 '특정 노드에 떠 있는 Alloy'에게만 역할을 줍니다.
+    
     prometheus.scrape "mysql" {
       targets = [
-        { "__address__" = sys.env("DEV_DB_IP") + ":9104", "environment" = "dev", "role" = "db", "application" = "mysql" },
-        // RDS는 내부 exporter를 경유하므로 서비스 도메인을 그대로 사용합니다.
-        { "__address__" = "mysql-exporter-rds.monitoring.svc:9104", "environment" = "production", "role" = "db", "application" = "mysql" },
+        { "__address__" = sys.env("DEV_DB_IP") + ":9104", "environment" = "dev", "role" = "db", "application" = "mysql", "node_filter" = "shared" },
+        { "__address__" = "mysql-exporter-rds.monitoring.svc:9104", "environment" = "production", "role" = "db", "application" = "mysql", "node_filter" = "shared" },
       ]
       forward_to = [prometheus.remote_write.default.receiver]
+      // 공유 타겟은 모든 Alloy가 아닌 특정 노드 하나에서만 처리되도록 필터링 (Hash 사용)
+      clustering {
+        enabled = true
+      }
     }
 
-    // --- 메트릭 수집: 외부 Redis (Dev / Prod) ---
     prometheus.scrape "redis" {
       targets = [
         { "__address__" = sys.env("DEV_REDIS_IP") + ":9121", "environment" = "dev", "role" = "db", "application" = "redis" },
         { "__address__" = sys.env("PROD_REDIS_IP") + ":9121", "environment" = "production", "role" = "db", "application" = "redis" },
       ]
       forward_to = [prometheus.remote_write.default.receiver]
+      clustering {
+        enabled = true
+      }
     }
 
     // --- 메트릭 수집: 앱 파드 자동 발견 및 라벨링 ---
@@ -59,7 +82,15 @@ data:
 
     discovery.relabel "pod_labels" {
       targets = discovery.kubernetes.pods.targets
-      // 네임스페이스를 environment 라벨로 변환 (prod-app -> production, dev-app -> dev)
+      
+      // 근본 해결: 자기 노드에 있는 파드만 수집 (중복 수집 방지)
+      rule {
+        source_labels = ["__meta_kubernetes_pod_node_name"]
+        regex         = sys.env("NODE_NAME")
+        action        = "keep"
+      }
+
+      // 네임스페이스를 environment 라벨로 변환
       rule {
         source_labels = ["__meta_kubernetes_namespace"]
         regex         = "prod-app"
@@ -72,12 +103,10 @@ data:
         target_label  = "environment"
         replacement   = "dev"
       }
-      // pod label 'app'을 application 라벨로 변환
       rule {
         source_labels = ["__meta_kubernetes_pod_label_app"]
         target_label  = "application"
       }
-      // role 라벨 추가
       rule {
         source_labels = ["__meta_kubernetes_pod_label_role"]
         target_label  = "role"
@@ -87,10 +116,6 @@ data:
     prometheus.scrape "pods" {
       targets    = discovery.relabel.pod_labels.output
       forward_to = [prometheus.remote_write.default.receiver]
-    }
-
-    discovery.kubernetes "nodes" {
-      role = "node"
     }
 
     prometheus.remote_write "default" {
