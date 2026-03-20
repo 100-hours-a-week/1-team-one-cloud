@@ -37,7 +37,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-            args:
+          args:
             - run
             - /etc/alloy/config.alloy
             - --storage.path=/var/lib/alloy/data
