@@ -18,6 +18,7 @@ spec:
     - 'docker.io/envoyproxy'
     - 'https://kubernetes.github.io/autoscaler'
     - 'https://kubernetes-sigs.github.io/aws-ebs-csi-driver'
+    - 'https://prometheus-community.github.io/helm-charts'
 
   # 배포 가능한 클러스터 및 네임스페이스 허용 목록
   # kubernetes.default.svc = ArgoCD가 설치된 같은 클러스터 내부

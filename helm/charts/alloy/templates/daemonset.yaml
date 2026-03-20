@@ -63,8 +63,6 @@ spec:
               mountPath: /etc/alloy
             - name: logs
               mountPath: /var/log
-            - name: containers
-              mountPath: /var/lib/docker/containers
               readOnly: true
       volumes:
         - name: config
@@ -73,6 +71,3 @@ spec:
         - name: logs
           hostPath:
             path: /var/log
-        - name: containers
-          hostPath:
-            path: /var/lib/docker/containers

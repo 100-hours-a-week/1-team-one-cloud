@@ -48,7 +48,7 @@ spec:
       - CreateNamespace=true
       - ServerSideApply=true
 ---
-# argocd/apps/monitoring-exporter.yaml (RDS 전용 추가)
+# argocd/apps/monitoring-exporter.yaml (RDS)
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -62,6 +62,74 @@ spec:
     repoURL: https://github.com/100-hours-a-week/1-team-one-cloud.git
     targetRevision: HEAD
     path: helm/charts/monitoring
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+---
+# argocd/apps/monitoring-ksm.yaml (Kube-State-Metrics)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring-ksm
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: prod-project
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    targetRevision: 5.25.1
+    chart: kube-state-metrics
+    helm:
+      values: |
+        prometheus:
+          monitor:
+            enabled: false
+        customAnnotations:
+          prometheus.io/scrape: "true"
+          prometheus.io/port: "8080"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+---
+# argocd/apps/monitoring-node-exporter.yaml (Node Exporter)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: monitoring-node-exporter
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: prod-project
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    targetRevision: 4.39.0
+    chart: prometheus-node-exporter
+    helm:
+      values: |
+        prometheus:
+          monitor:
+            enabled: false
+        podAnnotations:
+          prometheus.io/scrape: "true"
+          prometheus.io/port: "9100"
+        tolerations:
+          - operator: "Exists"
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring

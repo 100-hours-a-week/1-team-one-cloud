@@ -30,6 +30,7 @@ data:
         action        = "keep"
       }
     }
+    
     prometheus.scrape "kubelet" {
       targets = discovery.relabel.node_labels.output
       scheme = "https"
@@ -50,19 +51,28 @@ data:
         action = "keep"
       }
 
+      // prometheus.io/port 어노테이션이 있으면 타겟 포트를 그 값으로 치환
+      rule {
+        source_labels = ["__address__", "__meta_kubernetes_pod_annotation_prometheus_io_port"]
+        action = "replace"
+        regex = "([^:]+)(?::\\d+)?;(\\d+)"
+        replacement = "$1:$2"
+        target_label = "__address__"
+      }
+
+      // prometheus.io/path 어노테이션이 있는 경우 메트릭 경로로 치환
+      rule {
+        source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_path"]
+        action = "replace"
+        regex = "(.+)"
+        target_label = "__metrics_path__"
+      }
+
       // 담당 노드 필터링
       rule {
         source_labels = ["__meta_kubernetes_pod_node_name"]
         regex         = "^" + sys.env("NODE_NAME") + "$"
         action        = "keep"
-      }
-
-      // 백엔드 경로 자동 설정
-      rule {
-        source_labels = ["__meta_kubernetes_pod_label_app"]
-        regex         = "backend"
-        target_label  = "__metrics_path__"
-        replacement   = "/api/actuator/prometheus"
       }
 
       // 라벨링
