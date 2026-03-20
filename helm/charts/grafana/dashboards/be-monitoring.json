@@ -23,7 +23,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -82,7 +82,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -151,7 +151,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -220,7 +220,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -287,7 +287,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -346,7 +346,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -440,7 +440,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -551,7 +551,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -649,7 +649,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -772,7 +772,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -865,7 +865,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -958,7 +958,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1005,7 +1005,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1042,7 +1042,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1095,7 +1095,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1151,7 +1151,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1198,7 +1198,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1240,7 +1240,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1277,7 +1277,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1343,7 +1343,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1395,7 +1395,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1437,7 +1437,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1509,7 +1509,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1546,7 +1546,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1594,7 +1594,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "${ds_prometheus}"
+          "uid": "Prometheus"
         },
         "definition": "label_values(jvm_memory_used_bytes, environment)",
         "includeAll": false,
@@ -1616,7 +1616,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "${ds_prometheus}"
+          "uid": "Prometheus"
         },
         "definition": "label_values(jvm_memory_used_bytes{environment=\"$environment\"}, role)",
         "includeAll": false,
@@ -1638,7 +1638,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "${ds_prometheus}"
+          "uid": "Prometheus"
         },
         "definition": "label_values(jvm_memory_used_bytes{environment=\"$environment\", role=\"$role\"}, application)",
         "includeAll": false,
@@ -1660,7 +1660,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "${ds_prometheus}"
+          "uid": "Prometheus"
         },
         "definition": "label_values(up{environment=\"$environment\", role=\"$role\", application=\"$application\", job=\"spring-boot\"}, instance)",
         "includeAll": true,

@@ -23,7 +23,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -82,7 +82,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -151,7 +151,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -218,7 +218,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -277,7 +277,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -344,7 +344,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -438,7 +438,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -531,7 +531,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -649,7 +649,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -742,7 +742,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -845,7 +845,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -963,7 +963,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1002,7 +1002,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1044,7 +1044,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1105,7 +1105,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1147,7 +1147,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1203,7 +1203,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1240,7 +1240,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "${ds_prometheus}"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -1293,7 +1293,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "${ds_prometheus}"
+          "uid": "Prometheus"
         },
         "definition": "label_values(http_requests_total{role=\"ai\"}, environment)",
         "includeAll": false,
@@ -1328,7 +1328,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "${ds_prometheus}"
+          "uid": "Prometheus"
         },
         "definition": "label_values(http_requests_total{role=\"ai\", environment=\"$environment\"}, application)",
         "includeAll": false,
@@ -1350,7 +1350,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "${ds_prometheus}"
+          "uid": "Prometheus"
         },
         "definition": "label_values(up{role=\"ai\", environment=\"$environment\", application=\"$application\", job=\"fastapi\"},instance)",
         "includeAll": true,
