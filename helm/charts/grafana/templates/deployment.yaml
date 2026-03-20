@@ -24,13 +24,13 @@ spec:
             - name: GF_SECURITY_ADMIN_USER
               valueFrom:
                 secretKeyRef:
-                  name: grafana-admin-secret
-                  key: admin-user
+                  name: monitoring-secret
+                  key: grafana-admin-user
             - name: GF_SECURITY_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: grafana-admin-secret
-                  key: admin-password
+                  name: monitoring-secret
+                  key: grafana-admin-password
           ports:
             - containerPort: 3000
               name: http
