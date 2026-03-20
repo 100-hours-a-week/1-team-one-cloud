@@ -31,7 +31,7 @@ spec:
             - name: PROD_REDIS_IP
               valueFrom:
                 secretKeyRef:
-                  name: monitoring-secrets
+                  name: monitoring-secret
                   key: PROD_REDIS_IP
             - name: NODE_NAME
               valueFrom:
