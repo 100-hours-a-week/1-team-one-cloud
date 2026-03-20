@@ -1,3 +1,3 @@
 # helm/envs/prod/frontend-values.yaml
 image:
-  tag: "prod-6cf84512dc8951721d2e13ba1ec191b22aadd1ee"
+  tag: "prod-748aacc9991e46bed6dae6e75b47db8cf16a605d"
