@@ -46,7 +46,9 @@ spec:
           configMap:
             name: {{ .Chart.Name }}-config
   volumeClaimTemplates:
-    - metadata:
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
         name: storage
       spec:
         accessModes: [ "ReadWriteOnce" ]
