@@ -15,25 +15,20 @@ spec:
     spec:
       containers:
         - name: mysql-exporter
-          image: prom/mysqld-exporter:v0.15.0
+          image: prom/mysqld-exporter:latest
           env:
-            - name: RDS_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: monitoring-secret
-                  key: RDS_USERNAME
-            - name: RDS_PASSWORD
+            - name: MYSQLD_EXPORTER_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: monitoring-secret
                   key: RDS_PASSWORD
-            - name: RDS_HOSTNAME
-              valueFrom:
-                secretKeyRef:
-                  name: monitoring-secret
-                  key: RDS_HOSTNAME
-            - name: DATA_SOURCE_NAME
-              value: "$(RDS_USERNAME):$(RDS_PASSWORD)@($(RDS_HOSTNAME):3306)/"
+          command:
+            - "/bin/mysqld_exporter"
+            - "--mysqld.address=$(RDS_HOSTNAME):3306"
+            - "--mysqld.username=$(RDS_USERNAME)"
+          envFrom:
+            - secretRef:
+                name: monitoring-secret
           ports:
             - containerPort: 9104
               name: metrics
@@ -44,8 +39,9 @@ metadata:
   name: mysql-exporter-rds
   namespace: monitoring
 spec:
-  ports:
-    - port: 9104
-      targetPort: metrics
   selector:
     app: mysql-exporter-rds
+  ports:
+    - protocol: TCP
+      port: 9104
+      targetPort: 9104
