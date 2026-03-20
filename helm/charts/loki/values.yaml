@@ -1,8 +1,8 @@
 # helm/charts/loki/values.yaml
 image:
   repository: grafana/loki
-  tag: "3.0.0"
-  pullPolicy: IfNotPresent
+  tag: "3.4.2"
+  pullPolicy: Always
 
 service:
   type: ClusterIP
