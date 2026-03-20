@@ -13,6 +13,7 @@ data:
         isDefault: false
       - name: Prometheus
         type: prometheus
+        uid: Prometheus
         url: {{ .Values.datasources.prometheusUrl }}
         access: proxy
         isDefault: true
