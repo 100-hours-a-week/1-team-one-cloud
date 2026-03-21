@@ -75,18 +75,22 @@ data:
         action        = "keep"
       }
 
-      // 라벨링
+      // K8s 메타데이터 라벨 부착 (환경 대신 네임스페이스 활용)
       rule {
         source_labels = ["__meta_kubernetes_namespace"]
-        regex         = "prod-app"
-        target_label  = "environment"
-        replacement   = "production"
+        target_label  = "namespace"
       }
       rule {
-        source_labels = ["__meta_kubernetes_namespace"]
-        regex         = "dev-app"
-        target_label  = "environment"
-        replacement   = "dev"
+        source_labels = ["__meta_kubernetes_pod_name"]
+        target_label  = "pod"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_node_name"]
+        target_label  = "node"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_pod_container_name"]
+        target_label  = "container"
       }
       rule {
         source_labels = ["__meta_kubernetes_pod_label_app"]
@@ -102,8 +106,8 @@ data:
     // --- 메트릭 수집: 외부 DB (MySQL) ---
     prometheus.scrape "mysql" {
       targets = [
-        { "__address__" = sys.env("DEV_DB_IP") + ":9104", "environment" = "dev", "application" = "mysql" },
-        { "__address__" = "mysql-exporter-rds.monitoring.svc:9104", "environment" = "production", "application" = "mysql" },
+        { "__address__" = sys.env("DEV_DB_IP") + ":9104", "namespace" = "dev-app", "application" = "mysql" },
+        { "__address__" = "mysql-exporter-rds.monitoring.svc:9104", "namespace" = "prod-app", "application" = "mysql" },
       ]
       forward_to = [prometheus.remote_write.default.receiver]
       clustering { enabled = true }
@@ -112,8 +116,8 @@ data:
     // --- 메트릭 수집: 외부 Redis ---
     prometheus.scrape "redis" {
       targets = [
-        { "__address__" = sys.env("DEV_REDIS_IP") + ":9121", "environment" = "dev", "application" = "redis" },
-        { "__address__" = sys.env("PROD_REDIS_IP") + ":9121", "environment" = "production", "application" = "redis" },
+        { "__address__" = sys.env("DEV_REDIS_IP") + ":9121", "namespace" = "dev-app", "application" = "redis" },
+        { "__address__" = sys.env("PROD_REDIS_IP") + ":9121", "namespace" = "prod-app", "application" = "redis" },
       ]
       forward_to = [prometheus.remote_write.default.receiver]
       clustering { enabled = true }

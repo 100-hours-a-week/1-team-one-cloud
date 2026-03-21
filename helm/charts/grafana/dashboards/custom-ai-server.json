@@ -71,7 +71,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "time() - min(process_start_time_seconds{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"})",
+          "expr": "time() - min(process_start_time_seconds{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"})",
           "legendFormat": "Uptime",
           "refId": "A"
         }
@@ -138,7 +138,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(process_resident_memory_bytes{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"})",
+          "expr": "sum(process_resident_memory_bytes{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"})",
           "legendFormat": "RSS",
           "refId": "A"
         }
@@ -197,7 +197,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(rate(http_requests_total{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m]))",
+          "expr": "sum(rate(http_requests_total{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m]))",
           "legendFormat": "RPS",
           "refId": "A"
         }
@@ -264,7 +264,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(rate(http_request_duration_seconds_sum{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])) / sum(rate(http_request_duration_seconds_count{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m]))",
+          "expr": "sum(rate(http_request_duration_seconds_sum{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m])) / sum(rate(http_request_duration_seconds_count{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m]))",
           "legendFormat": "Avg",
           "refId": "A"
         }
@@ -333,7 +333,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(rate(http_requests_total{environment=\"$environment\", application=\"$application\", instance=~\"$instance\", status=~\"5..\"}[1m])) / sum(rate(http_requests_total{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m]))",
+          "expr": "sum(rate(http_requests_total{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", status=~\"5..\"}[1m])) / sum(rate(http_requests_total{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m]))",
           "legendFormat": "Error Rate",
           "refId": "A"
         }
@@ -451,7 +451,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum by(handler)(rate(http_requests_total{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m]))",
+          "expr": "sum by(handler)(rate(http_requests_total{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m]))",
           "legendFormat": "{{handler}}",
           "refId": "A"
         }
@@ -544,7 +544,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum by(handler, status)(rate(http_requests_total{environment=\"$environment\", application=\"$application\", instance=~\"$instance\", status=~\"4..|5..\"}[1m]))",
+          "expr": "sum by(handler, status)(rate(http_requests_total{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", status=~\"4..|5..\"}[1m]))",
           "legendFormat": "{{status}} {{handler}}",
           "refId": "A"
         }
@@ -662,7 +662,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum by(handler)(rate(http_request_duration_seconds_sum{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])) / sum by(handler)(rate(http_request_duration_seconds_count{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m]))",
+          "expr": "sum by(handler)(rate(http_request_duration_seconds_sum{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m])) / sum by(handler)(rate(http_request_duration_seconds_count{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m]))",
           "legendFormat": "avg - {{handler}}",
           "refId": "A"
         }
@@ -755,17 +755,17 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "histogram_quantile(0.50, sum by(le)(rate(http_request_duration_highr_seconds_bucket{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])))",
+          "expr": "histogram_quantile(0.50, sum by(le)(rate(http_request_duration_highr_seconds_bucket{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m])))",
           "legendFormat": "P50",
           "refId": "A"
         },
         {
-          "expr": "histogram_quantile(0.95, sum by(le)(rate(http_request_duration_highr_seconds_bucket{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])))",
+          "expr": "histogram_quantile(0.95, sum by(le)(rate(http_request_duration_highr_seconds_bucket{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m])))",
           "legendFormat": "P95",
           "refId": "B"
         },
         {
-          "expr": "histogram_quantile(0.99, sum by(le)(rate(http_request_duration_highr_seconds_bucket{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])))",
+          "expr": "histogram_quantile(0.99, sum by(le)(rate(http_request_duration_highr_seconds_bucket{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m])))",
           "legendFormat": "P99",
           "refId": "C"
         }
@@ -858,7 +858,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "histogram_quantile(0.99, sum by(handler, le)(rate(http_request_duration_seconds_bucket{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])))",
+          "expr": "histogram_quantile(0.99, sum by(handler, le)(rate(http_request_duration_seconds_bucket{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m])))",
           "legendFormat": "P99 - {{handler}}",
           "refId": "A"
         }
@@ -914,13 +914,13 @@
       },
       "targets": [
         {
-          "expr": "process_resident_memory_bytes{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}",
-          "legendFormat": "RSS - {{instance}}",
+          "expr": "process_resident_memory_bytes{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}",
+          "legendFormat": "RSS - {{pod}}",
           "refId": "A"
         },
         {
-          "expr": "process_virtual_memory_bytes{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}",
-          "legendFormat": "Virtual - {{instance}}",
+          "expr": "process_virtual_memory_bytes{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}",
+          "legendFormat": "Virtual - {{pod}}",
           "refId": "B"
         }
       ],
@@ -956,8 +956,8 @@
       },
       "targets": [
         {
-          "expr": "rate(process_cpu_seconds_total{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])",
-          "legendFormat": "CPU - {{instance}}",
+          "expr": "rate(process_cpu_seconds_total{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m])",
+          "legendFormat": "CPU - {{pod}}",
           "refId": "A"
         }
       ],
@@ -1012,8 +1012,8 @@
       },
       "targets": [
         {
-          "expr": "rate(python_gc_collections_total{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])",
-          "legendFormat": "gen{{generation}} - {{instance}}",
+          "expr": "rate(python_gc_collections_total{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m])",
+          "legendFormat": "gen{{generation}} - {{pod}}",
           "refId": "A"
         }
       ],
@@ -1049,13 +1049,13 @@
       },
       "targets": [
         {
-          "expr": "rate(python_gc_objects_collected_total{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])",
-          "legendFormat": "collected gen{{generation}} - {{instance}}",
+          "expr": "rate(python_gc_objects_collected_total{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m])",
+          "legendFormat": "collected gen{{generation}} - {{pod}}",
           "refId": "A"
         },
         {
-          "expr": "rate(python_gc_objects_uncollectable_total{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])",
-          "legendFormat": "uncollectable gen{{generation}} - {{instance}}",
+          "expr": "rate(python_gc_objects_uncollectable_total{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m])",
+          "legendFormat": "uncollectable gen{{generation}} - {{pod}}",
           "refId": "B"
         }
       ],
@@ -1080,8 +1080,8 @@
         },
         "definition": "label_values(http_requests_total{}, environment)",
         "includeAll": false,
-        "label": "Environment",
-        "name": "environment",
+        "label": "Namespace",
+        "name": "namespace",
         "options": [],
         "query": {
           "query": "label_values(http_requests_total{}, environment)",
@@ -1100,13 +1100,13 @@
           "type": "prometheus",
           "uid": "Prometheus"
         },
-        "definition": "label_values(http_requests_total{environment=\"$environment\"}, application)",
+        "definition": "label_values(http_requests_total{namespace=\"$namespace\"}, application)",
         "includeAll": false,
         "label": "Application",
         "name": "application",
         "options": [],
         "query": {
-          "query": "label_values(http_requests_total{environment=\"$environment\"}, application)",
+          "query": "label_values(http_requests_total{namespace=\"$namespace\"}, application)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
@@ -1122,17 +1122,13 @@
           "type": "prometheus",
           "uid": "Prometheus"
         },
-        "definition": "label_values(up{environment=\"$environment\", application=\"$application\"},instance)",
+        "definition": "label_values(up{namespace=\"$namespace\", application=\"$application\"},instance)",
         "includeAll": true,
-        "label": "Instance",
+        "label": "Pod",
         "multi": true,
-        "name": "instance",
+        "name": "pod",
         "options": [],
-        "query": {
-          "qryType": 1,
-          "query": "label_values(up{environment=\"$environment\", application=\"$application\"},instance)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
+        "query": "label_values(up{namespace=\"$namespace\", application=\"$application\"}, pod)",
         "refresh": 2,
         "regex": "",
         "regexApplyTo": "value",

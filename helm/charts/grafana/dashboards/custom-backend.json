@@ -71,7 +71,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "min(process_uptime_seconds{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"})",
+          "expr": "min(process_uptime_seconds{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"})",
           "legendFormat": "Uptime",
           "refId": "A"
         }
@@ -140,7 +140,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(jvm_memory_used_bytes{environment=\"$environment\", application=\"$application\", instance=~\"$instance\", area=\"heap\"}) / sum(jvm_memory_max_bytes{environment=\"$environment\", application=\"$application\", instance=~\"$instance\", id=\"G1 Old Gen\"})",
+          "expr": "sum(jvm_memory_used_bytes{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", area=\"heap\"}) / sum(jvm_memory_max_bytes{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", id=\"G1 Old Gen\"})",
           "legendFormat": "Heap%",
           "refId": "A"
         }
@@ -207,7 +207,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(jvm_threads_live_threads{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"})",
+          "expr": "sum(jvm_threads_live_threads{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"})",
           "legendFormat": "Threads",
           "refId": "A"
         }
@@ -266,7 +266,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(rate(http_server_requests_seconds_count{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m]))",
+          "expr": "sum(rate(http_server_requests_seconds_count{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m]))",
           "legendFormat": "RPS",
           "refId": "A"
         }
@@ -335,7 +335,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(rate(http_server_requests_seconds_count{environment=\"$environment\", application=\"$application\", instance=~\"$instance\", outcome=\"SERVER_ERROR\"}[1m])) / sum(rate(http_server_requests_seconds_count{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m]))",
+          "expr": "sum(rate(http_server_requests_seconds_count{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", outcome=\"SERVER_ERROR\"}[1m])) / sum(rate(http_server_requests_seconds_count{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m]))",
           "legendFormat": "5xx Rate",
           "refId": "A"
         }
@@ -453,8 +453,8 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum by(instance)(rate(http_server_requests_seconds_count{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m]))",
-          "legendFormat": "{{instance}}",
+          "expr": "sum by(instance)(rate(http_server_requests_seconds_count{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m]))",
+          "legendFormat": "{{pod}}",
           "refId": "A"
         }
       ],
@@ -546,7 +546,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum by(uri)(rate(http_server_requests_seconds_count{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m]))",
+          "expr": "sum by(uri)(rate(http_server_requests_seconds_count{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m]))",
           "legendFormat": "{{uri}}",
           "refId": "A"
         }
@@ -639,17 +639,17 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "histogram_quantile(0.50, sum by(le)(rate(http_server_requests_seconds_bucket{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])))",
+          "expr": "histogram_quantile(0.50, sum by(le)(rate(http_server_requests_seconds_bucket{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m])))",
           "legendFormat": "P50",
           "refId": "A"
         },
         {
-          "expr": "histogram_quantile(0.95, sum by(le)(rate(http_server_requests_seconds_bucket{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])))",
+          "expr": "histogram_quantile(0.95, sum by(le)(rate(http_server_requests_seconds_bucket{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m])))",
           "legendFormat": "P95",
           "refId": "B"
         },
         {
-          "expr": "histogram_quantile(0.99, sum by(le)(rate(http_server_requests_seconds_bucket{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])))",
+          "expr": "histogram_quantile(0.99, sum by(le)(rate(http_server_requests_seconds_bucket{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m])))",
           "legendFormat": "P99",
           "refId": "C"
         }
@@ -742,7 +742,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum by(uri, le)(rate(http_server_requests_seconds_bucket{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])))",
+          "expr": "histogram_quantile(0.95, sum by(uri, le)(rate(http_server_requests_seconds_bucket{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m])))",
           "legendFormat": "{{uri}}",
           "refId": "A"
         }
@@ -795,8 +795,8 @@
       },
       "targets": [
         {
-          "expr": "sum by(instance)(rate(http_server_requests_seconds_count{environment=\"$environment\", application=\"$application\", instance=~\"$instance\", outcome=\"SERVER_ERROR\"}[1m])) / sum by(instance)(rate(http_server_requests_seconds_count{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m]))",
-          "legendFormat": "5xx - {{instance}}",
+          "expr": "sum by(instance)(rate(http_server_requests_seconds_count{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", outcome=\"SERVER_ERROR\"}[1m])) / sum by(instance)(rate(http_server_requests_seconds_count{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m]))",
+          "legendFormat": "5xx - {{pod}}",
           "refId": "A"
         }
       ],
@@ -832,7 +832,7 @@
       },
       "targets": [
         {
-          "expr": "sum by(uri, status)(rate(http_server_requests_seconds_count{environment=\"$environment\", application=\"$application\", instance=~\"$instance\", outcome=~\"CLIENT_ERROR|SERVER_ERROR\"}[1m]))",
+          "expr": "sum by(uri, status)(rate(http_server_requests_seconds_count{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", outcome=~\"CLIENT_ERROR|SERVER_ERROR\"}[1m]))",
           "legendFormat": "{{status}} {{uri}}",
           "refId": "A"
         }
@@ -888,18 +888,18 @@
       },
       "targets": [
         {
-          "expr": "sum by(instance)(jvm_memory_used_bytes{environment=\"$environment\", application=\"$application\", instance=~\"$instance\", area=\"heap\"})",
-          "legendFormat": "Used - {{instance}}",
+          "expr": "sum by(instance)(jvm_memory_used_bytes{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", area=\"heap\"})",
+          "legendFormat": "Used - {{pod}}",
           "refId": "A"
         },
         {
-          "expr": "sum by(instance)(jvm_memory_committed_bytes{environment=\"$environment\", application=\"$application\", instance=~\"$instance\", area=\"heap\"})",
-          "legendFormat": "Committed - {{instance}}",
+          "expr": "sum by(instance)(jvm_memory_committed_bytes{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", area=\"heap\"})",
+          "legendFormat": "Committed - {{pod}}",
           "refId": "B"
         },
         {
-          "expr": "sum by(instance)(jvm_memory_max_bytes{environment=\"$environment\", application=\"$application\", instance=~\"$instance\", area=\"heap\"})",
-          "legendFormat": "Max - {{instance}}",
+          "expr": "sum by(instance)(jvm_memory_max_bytes{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", area=\"heap\"})",
+          "legendFormat": "Max - {{pod}}",
           "refId": "C"
         }
       ],
@@ -935,13 +935,13 @@
       },
       "targets": [
         {
-          "expr": "sum by(instance)(jvm_memory_used_bytes{environment=\"$environment\", application=\"$application\", instance=~\"$instance\", area=\"nonheap\"})",
-          "legendFormat": "Used - {{instance}}",
+          "expr": "sum by(instance)(jvm_memory_used_bytes{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", area=\"nonheap\"})",
+          "legendFormat": "Used - {{pod}}",
           "refId": "A"
         },
         {
-          "expr": "sum by(instance)(jvm_memory_committed_bytes{environment=\"$environment\", application=\"$application\", instance=~\"$instance\", area=\"nonheap\"})",
-          "legendFormat": "Committed - {{instance}}",
+          "expr": "sum by(instance)(jvm_memory_committed_bytes{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", area=\"nonheap\"})",
+          "legendFormat": "Committed - {{pod}}",
           "refId": "B"
         }
       ],
@@ -977,9 +977,14 @@
       },
       "targets": [
         {
-          "expr": "rate(jvm_gc_pause_seconds_sum{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])",
-          "legendFormat": "{{action}} {{cause}} - {{instance}}",
+          "expr": "rate(jvm_gc_pause_seconds_sum{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m])",
+          "legendFormat": "{{action}} {{cause}} - {{pod}}",
           "refId": "A"
+        },
+        {
+          "expr": "max by(pod)(jvm_gc_pause_seconds_max{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"})",
+          "legendFormat": "Max STW - {{pod}}",
+          "refId": "B"
         }
       ],
       "title": "GC Pause Time",
@@ -1014,18 +1019,18 @@
       },
       "targets": [
         {
-          "expr": "jvm_threads_live_threads{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}",
-          "legendFormat": "Live - {{instance}}",
+          "expr": "jvm_threads_live_threads{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}",
+          "legendFormat": "Live - {{pod}}",
           "refId": "A"
         },
         {
-          "expr": "jvm_threads_daemon_threads{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}",
-          "legendFormat": "Daemon - {{instance}}",
+          "expr": "jvm_threads_daemon_threads{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}",
+          "legendFormat": "Daemon - {{pod}}",
           "refId": "B"
         },
         {
-          "expr": "jvm_threads_peak_threads{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}",
-          "legendFormat": "Peak - {{instance}}",
+          "expr": "jvm_threads_peak_threads{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}",
+          "legendFormat": "Peak - {{pod}}",
           "refId": "C"
         }
       ],
@@ -1080,23 +1085,23 @@
       },
       "targets": [
         {
-          "expr": "hikaricp_connections_active{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}",
-          "legendFormat": "Active - {{instance}}",
+          "expr": "hikaricp_connections_active{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}",
+          "legendFormat": "Active - {{pod}}",
           "refId": "A"
         },
         {
-          "expr": "hikaricp_connections_idle{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}",
-          "legendFormat": "Idle - {{instance}}",
+          "expr": "hikaricp_connections_idle{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}",
+          "legendFormat": "Idle - {{pod}}",
           "refId": "B"
         },
         {
-          "expr": "hikaricp_connections_pending{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}",
-          "legendFormat": "Pending - {{instance}}",
+          "expr": "hikaricp_connections_pending{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}",
+          "legendFormat": "Pending - {{pod}}",
           "refId": "C"
         },
         {
-          "expr": "hikaricp_connections_max{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}",
-          "legendFormat": "Max - {{instance}}",
+          "expr": "hikaricp_connections_max{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}",
+          "legendFormat": "Max - {{pod}}",
           "refId": "D"
         }
       ],
@@ -1132,13 +1137,13 @@
       },
       "targets": [
         {
-          "expr": "rate(hikaricp_connections_acquire_seconds_sum{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m]) / rate(hikaricp_connections_acquire_seconds_count{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])",
-          "legendFormat": "Avg - {{instance}}",
+          "expr": "rate(hikaricp_connections_acquire_seconds_sum{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m]) / rate(hikaricp_connections_acquire_seconds_count{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m])",
+          "legendFormat": "Avg - {{pod}}",
           "refId": "A"
         },
         {
-          "expr": "hikaricp_connections_acquire_seconds_max{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}",
-          "legendFormat": "Max - {{instance}}",
+          "expr": "hikaricp_connections_acquire_seconds_max{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}",
+          "legendFormat": "Max - {{pod}}",
           "refId": "B"
         }
       ],
@@ -1190,8 +1195,8 @@
       },
       "targets": [
         {
-          "expr": "rate(hikaricp_connections_timeout_total{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])",
-          "legendFormat": "Timeout - {{instance}}",
+          "expr": "rate(hikaricp_connections_timeout_total{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m])",
+          "legendFormat": "Timeout - {{pod}}",
           "refId": "A"
         }
       ],
@@ -1246,7 +1251,7 @@
       },
       "targets": [
         {
-          "expr": "sum by(command)(rate(lettuce_command_completion_seconds_count{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m]))",
+          "expr": "sum by(command)(rate(lettuce_command_completion_seconds_count{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m]))",
           "legendFormat": "{{command}}",
           "refId": "A"
         }
@@ -1283,7 +1288,7 @@
       },
       "targets": [
         {
-          "expr": "sum by(command)(rate(lettuce_command_completion_seconds_sum{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])) / sum by(command)(rate(lettuce_command_completion_seconds_count{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m]))",
+          "expr": "sum by(command)(rate(lettuce_command_completion_seconds_sum{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m])) / sum by(command)(rate(lettuce_command_completion_seconds_count{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m]))",
           "legendFormat": "{{command}}",
           "refId": "A"
         }
@@ -1309,8 +1314,8 @@
         },
         "definition": "label_values(jvm_memory_used_bytes, environment)",
         "includeAll": false,
-        "label": "Environment",
-        "name": "environment",
+        "label": "Namespace",
+        "name": "namespace",
         "options": [],
         "query": {
           "query": "label_values(jvm_memory_used_bytes, environment)",
@@ -1329,13 +1334,13 @@
           "type": "prometheus",
           "uid": "Prometheus"
         },
-        "definition": "label_values(jvm_memory_used_bytes{environment=\"$environment\"}, application)",
+        "definition": "label_values(jvm_memory_used_bytes{namespace=\"$namespace\"}, application)",
         "includeAll": false,
         "label": "Application",
         "name": "application",
         "options": [],
         "query": {
-          "query": "label_values(jvm_memory_used_bytes{environment=\"$environment\"}, application)",
+          "query": "label_values(jvm_memory_used_bytes{namespace=\"$namespace\"}, application)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
@@ -1351,16 +1356,13 @@
           "type": "prometheus",
           "uid": "Prometheus"
         },
-        "definition": "label_values(up{environment=\"$environment\", application=\"$application\"}, instance)",
+        "definition": "label_values(up{namespace=\"$namespace\", application=\"$application\"}, instance)",
         "includeAll": true,
-        "label": "Instance",
+        "label": "Pod",
         "multi": true,
-        "name": "instance",
+        "name": "pod",
         "options": [],
-        "query": {
-          "query": "label_values(up{environment=\"$environment\", application=\"$application\"}, instance)",
-          "refId": "StandardVariableQuery"
-        },
+        "query": "label_values(up{namespace=\"$namespace\", application=\"$application\"}, pod)",
         "refresh": 2,
         "regexApplyTo": "value",
         "type": "query"

@@ -156,7 +156,7 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "mysql_global_status_threads_connected{environment=\"$environment\"}",
+          "expr": "mysql_global_status_threads_connected{namespace=\"$namespace\"}",
           "legendFormat": "\ud604\uc7ac \ucee4\ub125\uc158",
           "refId": "A"
         },
@@ -165,7 +165,7 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "mysql_global_variables_max_connections{environment=\"$environment\"}",
+          "expr": "mysql_global_variables_max_connections{namespace=\"$namespace\"}",
           "legendFormat": "\ucd5c\ub300 \ucee4\ub125\uc158",
           "refId": "B"
         }
@@ -295,7 +295,7 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "rate(mysql_global_status_commands_total{environment=\"$environment\", command=\"select\"}[1m])",
+          "expr": "rate(mysql_global_status_commands_total{namespace=\"$namespace\", command=\"select\"}[1m])",
           "legendFormat": "\uc77d\uae30 (SELECT)",
           "refId": "A"
         },
@@ -304,7 +304,7 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "sum(rate(mysql_global_status_commands_total{environment=\"$environment\", command=~\"insert|update|delete\"}[1m]))",
+          "expr": "sum(rate(mysql_global_status_commands_total{namespace=\"$namespace\", command=~\"insert|update|delete\"}[1m]))",
           "legendFormat": "\uc4f0\uae30 (INSERT+UPDATE+DELETE)",
           "refId": "B"
         }
@@ -404,7 +404,7 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "rate(mysql_global_status_slow_queries{environment=\"$environment\"}[1m])",
+          "expr": "rate(mysql_global_status_slow_queries{namespace=\"$namespace\"}[1m])",
           "legendFormat": "Slow Query/s",
           "refId": "A"
         }
@@ -508,7 +508,7 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "(1 - rate(mysql_global_status_innodb_buffer_pool_reads{environment=\"$environment\"}[1m]) / rate(mysql_global_status_innodb_buffer_pool_read_requests{environment=\"$environment\"}[1m])) * 100",
+          "expr": "(1 - rate(mysql_global_status_innodb_buffer_pool_reads{namespace=\"$namespace\"}[1m]) / rate(mysql_global_status_innodb_buffer_pool_read_requests{namespace=\"$namespace\"}[1m])) * 100",
           "legendFormat": "\ubc84\ud37c\ud480 \ud788\ud2b8\uc728 %",
           "refId": "A"
         }
@@ -578,7 +578,7 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "mysql_global_status_threads_connected{environment=\"$environment\"}",
+          "expr": "mysql_global_status_threads_connected{namespace=\"$namespace\"}",
           "legendFormat": "\ucee4\ub125\uc158",
           "refId": "A"
         }
@@ -655,7 +655,7 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "mysql_up{environment=\"$environment\"}",
+          "expr": "mysql_up{namespace=\"$namespace\"}",
           "legendFormat": "MySQL",
           "refId": "A"
         }
@@ -732,7 +732,7 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "redis_up{environment=\"$environment\"}",
+          "expr": "redis_up{namespace=\"$namespace\"}",
           "legendFormat": "Redis",
           "refId": "A"
         }
@@ -872,7 +872,7 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "redis_memory_used_bytes{environment=\"$environment\"}",
+          "expr": "redis_memory_used_bytes{namespace=\"$namespace\"}",
           "legendFormat": "\uc0ac\uc6a9 \uba54\ubaa8\ub9ac",
           "refId": "A"
         },
@@ -881,7 +881,7 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "redis_memory_peak_bytes{environment=\"$environment\"}",
+          "expr": "redis_memory_peak_bytes{namespace=\"$namespace\"}",
           "legendFormat": "\ud53c\ud06c \uba54\ubaa8\ub9ac",
           "refId": "B"
         }
@@ -985,7 +985,7 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "rate(redis_keyspace_hits_total{environment=\"$environment\"}[1m]) / (rate(redis_keyspace_hits_total{environment=\"$environment\"}[1m]) + rate(redis_keyspace_misses_total{environment=\"$environment\"}[1m])) * 100",
+          "expr": "rate(redis_keyspace_hits_total{namespace=\"$namespace\"}[1m]) / (rate(redis_keyspace_hits_total{namespace=\"$namespace\"}[1m]) + rate(redis_keyspace_misses_total{namespace=\"$namespace\"}[1m])) * 100",
           "legendFormat": "\ud788\ud2b8\uc728 %",
           "refId": "A"
         }
@@ -1115,7 +1115,7 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "rate(redis_keyspace_hits_total{environment=\"$environment\"}[1m])",
+          "expr": "rate(redis_keyspace_hits_total{namespace=\"$namespace\"}[1m])",
           "legendFormat": "Hit/s",
           "refId": "A"
         },
@@ -1124,7 +1124,7 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "rate(redis_keyspace_misses_total{environment=\"$environment\"}[1m])",
+          "expr": "rate(redis_keyspace_misses_total{namespace=\"$namespace\"}[1m])",
           "legendFormat": "Miss/s",
           "refId": "B"
         }
@@ -1254,7 +1254,7 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "rate(redis_evicted_keys_total{environment=\"$environment\"}[1m])",
+          "expr": "rate(redis_evicted_keys_total{namespace=\"$namespace\"}[1m])",
           "legendFormat": "Eviction/s (\uac15\uc81c \uc0ad\uc81c)",
           "refId": "A"
         },
@@ -1263,7 +1263,7 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "rate(redis_expired_keys_total{environment=\"$environment\"}[1m])",
+          "expr": "rate(redis_expired_keys_total{namespace=\"$namespace\"}[1m])",
           "legendFormat": "Expired/s (\ub9cc\ub8cc)",
           "refId": "B"
         }
@@ -1363,7 +1363,7 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "rate(redis_commands_processed_total{environment=\"$environment\"}[1m])",
+          "expr": "rate(redis_commands_processed_total{namespace=\"$namespace\"}[1m])",
           "legendFormat": "Commands/s",
           "refId": "A"
         }
@@ -1435,7 +1435,7 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "rate(redis_keyspace_hits_total{environment=\"$environment\"}[1m]) / (rate(redis_keyspace_hits_total{environment=\"$environment\"}[1m]) + rate(redis_keyspace_misses_total{environment=\"$environment\"}[1m])) * 100",
+          "expr": "rate(redis_keyspace_hits_total{namespace=\"$namespace\"}[1m]) / (rate(redis_keyspace_hits_total{namespace=\"$namespace\"}[1m]) + rate(redis_keyspace_misses_total{namespace=\"$namespace\"}[1m])) * 100",
           "legendFormat": "\ud788\ud2b8\uc728",
           "refId": "A"
         }
@@ -1504,7 +1504,7 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "redis_connected_clients{environment=\"$environment\"}",
+          "expr": "redis_connected_clients{namespace=\"$namespace\"}",
           "legendFormat": "\ud074\ub77c\uc774\uc5b8\ud2b8",
           "refId": "A"
         }
@@ -1573,13 +1573,50 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "redis_memory_used_bytes{environment=\"$environment\"}",
+          "expr": "redis_memory_used_bytes{namespace=\"$namespace\"}",
           "legendFormat": "\uba54\ubaa8\ub9ac",
           "refId": "A"
         }
       ],
       "title": "\ud83d\udd34 Redis \u2014 \uba54\ubaa8\ub9ac \uc0ac\uc6a9\ub7c9 (Stat)",
       "type": "stat"
+    },
+    {
+      "type": "stat",
+      "title": "\ud83d\udd34 Redis \u2014 Blocked Clients",
+      "gridPos": {
+        "x": 0,
+        "y": 100,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "redis_blocked_clients{namespace=\"$namespace\"}",
+          "legendFormat": "Blocked",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        }
+      }
     }
   ],
   "preload": false,
@@ -1595,13 +1632,13 @@
     "list": [
       {
         "current": {
-          "text": "dev",
-          "value": "dev"
+          "text": "dev-app",
+          "value": "dev-app"
         },
-        "label": "Environment",
-        "name": "environment",
+        "label": "Namespace",
+        "name": "namespace",
         "options": [],
-        "query": "dev,production",
+        "query": "dev-app,prod-app",
         "type": "custom",
         "valuesFormat": "csv"
       }
