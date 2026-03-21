@@ -1078,13 +1078,13 @@
           "type": "prometheus",
           "uid": "Prometheus"
         },
-        "definition": "label_values(http_requests_total{}, environment)",
+        "definition": "label_values(http_requests_total{}, namespace)",
         "includeAll": false,
         "label": "Namespace",
         "name": "namespace",
         "options": [],
         "query": {
-          "query": "label_values(http_requests_total{}, environment)",
+          "query": "label_values(http_requests_total{}, namespace)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
@@ -1122,7 +1122,7 @@
           "type": "prometheus",
           "uid": "Prometheus"
         },
-        "definition": "label_values(up{namespace=\"$namespace\", application=\"$application\"},instance)",
+        "definition": "label_values(up{namespace=\"$namespace\", application=\"$application\"},pod)",
         "includeAll": true,
         "label": "Pod",
         "multi": true,

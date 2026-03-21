@@ -453,7 +453,7 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum by(instance)(rate(http_server_requests_seconds_count{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m]))",
+          "expr": "sum by(pod)(rate(http_server_requests_seconds_count{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m]))",
           "legendFormat": "{{pod}}",
           "refId": "A"
         }
@@ -795,7 +795,7 @@
       },
       "targets": [
         {
-          "expr": "sum by(instance)(rate(http_server_requests_seconds_count{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", outcome=\"SERVER_ERROR\"}[1m])) / sum by(instance)(rate(http_server_requests_seconds_count{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m]))",
+          "expr": "sum by(pod)(rate(http_server_requests_seconds_count{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", outcome=\"SERVER_ERROR\"}[1m])) / sum by(pod)(rate(http_server_requests_seconds_count{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\"}[1m]))",
           "legendFormat": "5xx - {{pod}}",
           "refId": "A"
         }
@@ -888,17 +888,17 @@
       },
       "targets": [
         {
-          "expr": "sum by(instance)(jvm_memory_used_bytes{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", area=\"heap\"})",
+          "expr": "sum by(pod)(jvm_memory_used_bytes{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", area=\"heap\"})",
           "legendFormat": "Used - {{pod}}",
           "refId": "A"
         },
         {
-          "expr": "sum by(instance)(jvm_memory_committed_bytes{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", area=\"heap\"})",
+          "expr": "sum by(pod)(jvm_memory_committed_bytes{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", area=\"heap\"})",
           "legendFormat": "Committed - {{pod}}",
           "refId": "B"
         },
         {
-          "expr": "sum by(instance)(jvm_memory_max_bytes{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", area=\"heap\"})",
+          "expr": "sum by(pod)(jvm_memory_max_bytes{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", area=\"heap\"})",
           "legendFormat": "Max - {{pod}}",
           "refId": "C"
         }
@@ -935,12 +935,12 @@
       },
       "targets": [
         {
-          "expr": "sum by(instance)(jvm_memory_used_bytes{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", area=\"nonheap\"})",
+          "expr": "sum by(pod)(jvm_memory_used_bytes{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", area=\"nonheap\"})",
           "legendFormat": "Used - {{pod}}",
           "refId": "A"
         },
         {
-          "expr": "sum by(instance)(jvm_memory_committed_bytes{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", area=\"nonheap\"})",
+          "expr": "sum by(pod)(jvm_memory_committed_bytes{namespace=\"$namespace\", application=\"$application\", pod=~\"$pod\", area=\"nonheap\"})",
           "legendFormat": "Committed - {{pod}}",
           "refId": "B"
         }
@@ -1312,13 +1312,13 @@
           "type": "prometheus",
           "uid": "Prometheus"
         },
-        "definition": "label_values(jvm_memory_used_bytes, environment)",
+        "definition": "label_values(jvm_memory_used_bytes, namespace)",
         "includeAll": false,
         "label": "Namespace",
         "name": "namespace",
         "options": [],
         "query": {
-          "query": "label_values(jvm_memory_used_bytes, environment)",
+          "query": "label_values(jvm_memory_used_bytes, namespace)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
@@ -1356,7 +1356,7 @@
           "type": "prometheus",
           "uid": "Prometheus"
         },
-        "definition": "label_values(up{namespace=\"$namespace\", application=\"$application\"}, instance)",
+        "definition": "label_values(up{namespace=\"$namespace\", application=\"$application\"}, pod)",
         "includeAll": true,
         "label": "Pod",
         "multi": true,
