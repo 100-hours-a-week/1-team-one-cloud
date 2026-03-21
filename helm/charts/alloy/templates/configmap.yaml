@@ -35,7 +35,7 @@ data:
     }
 
     local.file_match "pod_logs" {
-      targets = discovery.relabel.pod_logs.output
+      path_targets = discovery.relabel.pod_logs.output
     }
     loki.source.file "pod_logs" {
       targets = local.file_match.pod_logs.targets
