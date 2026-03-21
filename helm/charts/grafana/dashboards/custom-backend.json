@@ -1,0 +1,352 @@
+{
+  "uid": "pure-backend",
+  "title": "Production: Backend (Spring Boot)",
+  "refresh": "10s",
+  "schemaVersion": 36,
+  "templating": {
+    "list": [
+      {
+        "name": "environment",
+        "type": "query",
+        "datasource": {
+          "uid": "Prometheus",
+          "type": "prometheus"
+        },
+        "query": "label_values(up{application=\"backend\"}, environment)",
+        "refresh": 1
+      },
+      {
+        "name": "instance",
+        "type": "query",
+        "datasource": {
+          "uid": "Prometheus",
+          "type": "prometheus"
+        },
+        "query": "label_values(up{application=\"backend\", environment=\"$environment\"}, instance)",
+        "refresh": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*"
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "HTTP Requests Per Sec (RPS)",
+      "type": "timeseries",
+      "datasource": {
+        "uid": "Prometheus",
+        "type": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 7
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(http_server_requests_seconds_count{application=\"backend\", environment=\"$environment\", instance=~\"$instance\"}[1m])) by (uri)",
+          "refId": "A",
+          "legendFormat": "{{uri}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 15,
+            "lineWidth": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "title": "HTTP Error Rates (4xx / 5xx)",
+      "type": "timeseries",
+      "datasource": {
+        "uid": "Prometheus",
+        "type": "prometheus"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 0,
+        "w": 8,
+        "h": 7
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(http_server_requests_seconds_count{status=~\"4..|5..\", application=\"backend\", environment=\"$environment\", instance=~\"$instance\"}[1m])) by (uri, status)",
+          "refId": "A",
+          "legendFormat": "{{uri}} - {{status}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 15,
+            "lineWidth": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 3,
+      "title": "HTTP Avg Latency",
+      "type": "timeseries",
+      "datasource": {
+        "uid": "Prometheus",
+        "type": "prometheus"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 0,
+        "w": 8,
+        "h": 7
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(http_server_requests_seconds_sum{application=\"backend\", environment=\"$environment\", instance=~\"$instance\"}[1m])) / sum(rate(http_server_requests_seconds_count{application=\"backend\", environment=\"$environment\", instance=~\"$instance\"}[1m]))",
+          "refId": "A",
+          "legendFormat": "Avg Latency"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 15,
+            "lineWidth": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "title": "JVM Memory: Heap vs Non-Heap",
+      "type": "timeseries",
+      "datasource": {
+        "uid": "Prometheus",
+        "type": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 7,
+        "w": 8,
+        "h": 7
+      },
+      "targets": [
+        {
+          "expr": "sum(jvm_memory_used_bytes{area=\"heap\", application=\"backend\", environment=\"$environment\", instance=~\"$instance\"}) by (instance)",
+          "refId": "A",
+          "legendFormat": "Heap Used - {{instance}}"
+        },
+        {
+          "expr": "sum(jvm_memory_used_bytes{area=\"nonheap\", application=\"backend\", environment=\"$environment\", instance=~\"$instance\"}) by (instance)",
+          "refId": "B",
+          "legendFormat": "Non-Heap Used - {{instance}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 15,
+            "lineWidth": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 5,
+      "title": "Garbage Collection (GC) Pause Times",
+      "type": "timeseries",
+      "datasource": {
+        "uid": "Prometheus",
+        "type": "prometheus"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 7,
+        "w": 8,
+        "h": 7
+      },
+      "targets": [
+        {
+          "expr": "max(jvm_gc_pause_seconds_max{application=\"backend\", environment=\"$environment\", instance=~\"$instance\"}) by (instance)",
+          "refId": "A",
+          "legendFormat": "Max Pause - {{instance}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 15,
+            "lineWidth": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 6,
+      "title": "JVM Application Threads",
+      "type": "timeseries",
+      "datasource": {
+        "uid": "Prometheus",
+        "type": "prometheus"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 7,
+        "w": 8,
+        "h": 7
+      },
+      "targets": [
+        {
+          "expr": "sum(jvm_threads_live_threads{application=\"backend\", environment=\"$environment\", instance=~\"$instance\"}) by (instance)",
+          "refId": "A",
+          "legendFormat": "Live Threads - {{instance}}"
+        },
+        {
+          "expr": "sum(jvm_threads_daemon_threads{application=\"backend\", environment=\"$environment\", instance=~\"$instance\"}) by (instance)",
+          "refId": "B",
+          "legendFormat": "Daemon Threads - {{instance}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 15,
+            "lineWidth": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 7,
+      "title": "HikariCP DB Connections (Active vs Idle)",
+      "type": "timeseries",
+      "datasource": {
+        "uid": "Prometheus",
+        "type": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 14,
+        "w": 12,
+        "h": 7
+      },
+      "targets": [
+        {
+          "expr": "sum(hikaricp_connections_active{application=\"backend\", environment=\"$environment\", instance=~\"$instance\"}) by (instance)",
+          "refId": "A",
+          "legendFormat": "Active - {{instance}}"
+        },
+        {
+          "expr": "sum(hikaricp_connections_idle{application=\"backend\", environment=\"$environment\", instance=~\"$instance\"}) by (instance)",
+          "refId": "B",
+          "legendFormat": "Idle - {{instance}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 15,
+            "lineWidth": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 8,
+      "title": "HikariCP Connection Pending & Timeouts",
+      "type": "timeseries",
+      "datasource": {
+        "uid": "Prometheus",
+        "type": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 14,
+        "w": 12,
+        "h": 7
+      },
+      "targets": [
+        {
+          "expr": "sum(hikaricp_connections_pending{application=\"backend\", environment=\"$environment\", instance=~\"$instance\"}) by (instance)",
+          "refId": "A",
+          "legendFormat": "Pending - {{instance}}"
+        },
+        {
+          "expr": "sum(rate(hikaricp_connections_timeout_total{application=\"backend\", environment=\"$environment\", instance=~\"$instance\"}[1m])) by (instance)",
+          "refId": "B",
+          "legendFormat": "Timeouts/sec - {{instance}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 15,
+            "lineWidth": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 9,
+      "title": "Application Alerts (Logback Error/Warn Rates)",
+      "type": "timeseries",
+      "datasource": {
+        "uid": "Prometheus",
+        "type": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 21,
+        "w": 24,
+        "h": 6
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(logback_events_total{level=~\"error|warn\", application=\"backend\", environment=\"$environment\", instance=~\"$instance\"}[1m])) by (level, instance)",
+          "refId": "A",
+          "legendFormat": "{{level}} logs/sec - {{instance}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 15,
+            "lineWidth": 2
+          }
+        }
+      }
+    }
+  ]
+}

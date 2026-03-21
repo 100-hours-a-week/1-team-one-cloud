@@ -1,0 +1,344 @@
+{
+  "uid": "pure-db-redis",
+  "title": "Production: DB & Redis",
+  "refresh": "10s",
+  "schemaVersion": 36,
+  "templating": {
+    "list": [
+      {
+        "name": "environment",
+        "type": "query",
+        "datasource": {
+          "uid": "Prometheus",
+          "type": "prometheus"
+        },
+        "query": "label_values(up{application=\"mysql\"}, environment)",
+        "refresh": 1
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "MySQL & Redis Status (Up=1)",
+      "type": "timeseries",
+      "datasource": {
+        "uid": "Prometheus",
+        "type": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 5
+      },
+      "targets": [
+        {
+          "expr": "mysql_up{environment=\"$environment\"}",
+          "refId": "A",
+          "legendFormat": "MySQL Up - {{environment}}"
+        },
+        {
+          "expr": "redis_up{environment=\"$environment\"}",
+          "refId": "B",
+          "legendFormat": "Redis Up - {{environment}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 15,
+            "lineWidth": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "title": "MySQL Queries/sec & Slow Queries",
+      "type": "timeseries",
+      "datasource": {
+        "uid": "Prometheus",
+        "type": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 5,
+        "w": 8,
+        "h": 7
+      },
+      "targets": [
+        {
+          "expr": "rate(mysql_global_status_commands_total{environment=\"$environment\"}[1m])",
+          "refId": "A",
+          "legendFormat": "Queries/sec"
+        },
+        {
+          "expr": "rate(mysql_global_status_slow_queries{environment=\"$environment\"}[1m])",
+          "refId": "B",
+          "legendFormat": "Slow Queries/sec"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 15,
+            "lineWidth": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 3,
+      "title": "MySQL Connections (Connected vs Running)",
+      "type": "timeseries",
+      "datasource": {
+        "uid": "Prometheus",
+        "type": "prometheus"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 5,
+        "w": 8,
+        "h": 7
+      },
+      "targets": [
+        {
+          "expr": "mysql_global_status_threads_connected{environment=\"$environment\"}",
+          "refId": "A",
+          "legendFormat": "Connected"
+        },
+        {
+          "expr": "mysql_global_status_threads_running{environment=\"$environment\"}",
+          "refId": "B",
+          "legendFormat": "Actively Running"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 15,
+            "lineWidth": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "title": "MySQL InnoDB Buffer Pool Hit Rate",
+      "type": "timeseries",
+      "datasource": {
+        "uid": "Prometheus",
+        "type": "prometheus"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 5,
+        "w": 8,
+        "h": 7
+      },
+      "targets": [
+        {
+          "expr": "1 - (rate(mysql_global_status_innodb_buffer_pool_reads{environment=\"$environment\"}[1m]) / rate(mysql_global_status_innodb_buffer_pool_read_requests{environment=\"$environment\"}[1m]))",
+          "refId": "A",
+          "legendFormat": "Buffer Hit Rate %"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 15,
+            "lineWidth": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 5,
+      "title": "Redis Commands/sec",
+      "type": "timeseries",
+      "datasource": {
+        "uid": "Prometheus",
+        "type": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 12,
+        "w": 8,
+        "h": 7
+      },
+      "targets": [
+        {
+          "expr": "rate(redis_commands_processed_total{environment=\"$environment\"}[1m])",
+          "refId": "A",
+          "legendFormat": "Commands Pushed"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 15,
+            "lineWidth": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 6,
+      "title": "Redis Cache Hit Rate",
+      "type": "timeseries",
+      "datasource": {
+        "uid": "Prometheus",
+        "type": "prometheus"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 12,
+        "w": 8,
+        "h": 7
+      },
+      "targets": [
+        {
+          "expr": "rate(redis_keyspace_hits_total{environment=\"$environment\"}[1m]) / (rate(redis_keyspace_hits_total{environment=\"$environment\"}[1m]) + rate(redis_keyspace_misses_total{environment=\"$environment\"}[1m]))",
+          "refId": "A",
+          "legendFormat": "Hit Rate %"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 15,
+            "lineWidth": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 7,
+      "title": "Redis Memory Used vs Evicted Keys",
+      "type": "timeseries",
+      "datasource": {
+        "uid": "Prometheus",
+        "type": "prometheus"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 12,
+        "w": 8,
+        "h": 7
+      },
+      "targets": [
+        {
+          "expr": "redis_memory_used_bytes{environment=\"$environment\"}",
+          "refId": "A",
+          "legendFormat": "RAM Used"
+        },
+        {
+          "expr": "rate(redis_evicted_keys_total{environment=\"$environment\"}[1m])",
+          "refId": "B",
+          "legendFormat": "Evicted/sec (Memory Full Alert)"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 15,
+            "lineWidth": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 8,
+      "title": "Redis Connected Clients",
+      "type": "timeseries",
+      "datasource": {
+        "uid": "Prometheus",
+        "type": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 19,
+        "w": 12,
+        "h": 7
+      },
+      "targets": [
+        {
+          "expr": "redis_connected_clients{environment=\"$environment\"}",
+          "refId": "A",
+          "legendFormat": "Currently Connected"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 15,
+            "lineWidth": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 9,
+      "title": "Redis Network I/O",
+      "type": "timeseries",
+      "datasource": {
+        "uid": "Prometheus",
+        "type": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 19,
+        "w": 12,
+        "h": 7
+      },
+      "targets": [
+        {
+          "expr": "rate(redis_net_input_bytes_total{environment=\"$environment\"}[1m])",
+          "refId": "A",
+          "legendFormat": "Inbound Bytes/sec"
+        },
+        {
+          "expr": "rate(redis_net_output_bytes_total{environment=\"$environment\"}[1m])",
+          "refId": "B",
+          "legendFormat": "Outbound Bytes/sec"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "Bps",
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "fillOpacity": 15,
+            "lineWidth": 2
+          }
+        }
+      }
+    }
+  ]
+}
