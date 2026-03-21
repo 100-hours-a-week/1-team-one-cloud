@@ -52,6 +52,20 @@ spec:
               value: /var/lib/grafana/dashboards
             - name: RESOURCE
               value: configmap
+            - name: REQ_URL
+              value: "http://localhost:3000/api/admin/provisioning/dashboards/reload"
+            - name: REQ_METHOD
+              value: "POST"
+            - name: REQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: monitoring-secret
+                  key: grafana-admin-user
+            - name: REQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: monitoring-secret
+                  key: grafana-admin-password
           volumeMounts:
             - name: sc-dashboard-volume
               mountPath: /var/lib/grafana/dashboards
