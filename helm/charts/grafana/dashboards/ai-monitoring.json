@@ -71,12 +71,12 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "time() - min(process_start_time_seconds{environment=\"$environment\", role=\"$role\", application=\"$application\", instance=~\"$instance\"})",
+          "expr": "time() - min(process_start_time_seconds{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"})",
           "legendFormat": "Uptime",
           "refId": "A"
         }
       ],
-      "title": "🟢 Uptime",
+      "title": "\ud83d\udfe2 Uptime",
       "type": "stat"
     },
     {
@@ -140,12 +140,12 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "avg(1 - avg by(instance)(rate(node_cpu_seconds_total{environment=\"$environment\", role=\"$role\", instance=~\"$instance\", mode=\"idle\"}[1m])))",
+          "expr": "avg(1 - avg by(instance)(rate(node_cpu_seconds_total{environment=\"$environment\", instance=~\"$instance\", mode=\"idle\"}[1m])))",
           "legendFormat": "CPU",
           "refId": "A"
         }
       ],
-      "title": "🔥 CPU Usage",
+      "title": "\ud83d\udd25 CPU Usage",
       "type": "stat"
     },
     {
@@ -207,12 +207,12 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(process_resident_memory_bytes{environment=\"$environment\", role=\"$role\", application=\"$application\", instance=~\"$instance\"})",
+          "expr": "sum(process_resident_memory_bytes{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"})",
           "legendFormat": "RSS",
           "refId": "A"
         }
       ],
-      "title": "💾 Memory (RSS)",
+      "title": "\ud83d\udcbe Memory (RSS)",
       "type": "stat"
     },
     {
@@ -266,12 +266,12 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(rate(http_requests_total{environment=\"$environment\", role=\"$role\", application=\"$application\", instance=~\"$instance\"}[1m]))",
+          "expr": "sum(rate(http_requests_total{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m]))",
           "legendFormat": "RPS",
           "refId": "A"
         }
       ],
-      "title": "📡 RPS",
+      "title": "\ud83d\udce1 RPS",
       "type": "stat"
     },
     {
@@ -333,12 +333,12 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(rate(http_request_duration_seconds_sum{environment=\"$environment\", role=\"$role\", application=\"$application\", instance=~\"$instance\"}[1m])) / sum(rate(http_request_duration_seconds_count{environment=\"$environment\", role=\"$role\", application=\"$application\", instance=~\"$instance\"}[1m]))",
+          "expr": "sum(rate(http_request_duration_seconds_sum{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])) / sum(rate(http_request_duration_seconds_count{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m]))",
           "legendFormat": "Avg",
           "refId": "A"
         }
       ],
-      "title": "⏱️ 평균 응답시간",
+      "title": "\u23f1\ufe0f \ud3c9\uade0 \uc751\ub2f5\uc2dc\uac04",
       "type": "stat"
     },
     {
@@ -402,12 +402,12 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum(rate(http_requests_total{environment=\"$environment\", role=\"$role\", application=\"$application\", instance=~\"$instance\", status=~\"5..\"}[1m])) / sum(rate(http_requests_total{environment=\"$environment\", role=\"$role\", application=\"$application\", instance=~\"$instance\"}[1m]))",
+          "expr": "sum(rate(http_requests_total{environment=\"$environment\", application=\"$application\", instance=~\"$instance\", status=~\"5..\"}[1m])) / sum(rate(http_requests_total{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m]))",
           "legendFormat": "Error Rate",
           "refId": "A"
         }
       ],
-      "title": "⚠️ 에러율",
+      "title": "\u26a0\ufe0f \uc5d0\ub7ec\uc728",
       "type": "stat"
     },
     {
@@ -428,11 +428,11 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "## 📡 HTTP",
+        "content": "## \ud83d\udce1 HTTP",
         "mode": "markdown"
       },
       "pluginVersion": "12.4.0",
-      "title": "── HTTP ──",
+      "title": "\u2500\u2500 HTTP \u2500\u2500",
       "type": "text"
     },
     {
@@ -520,12 +520,12 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum by(handler)(rate(http_requests_total{environment=\"$environment\", role=\"$role\", application=\"$application\", instance=~\"$instance\"}[1m]))",
+          "expr": "sum by(handler)(rate(http_requests_total{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m]))",
           "legendFormat": "{{handler}}",
           "refId": "A"
         }
       ],
-      "title": "Handler별 RPS",
+      "title": "Handler\ubcc4 RPS",
       "type": "timeseries"
     },
     {
@@ -613,12 +613,12 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum by(handler, status)(rate(http_requests_total{environment=\"$environment\", role=\"$role\", application=\"$application\", instance=~\"$instance\", status=~\"4..|5..\"}[1m]))",
+          "expr": "sum by(handler, status)(rate(http_requests_total{environment=\"$environment\", application=\"$application\", instance=~\"$instance\", status=~\"4..|5..\"}[1m]))",
           "legendFormat": "{{status}} {{handler}}",
           "refId": "A"
         }
       ],
-      "title": "Handler별 에러 RPS",
+      "title": "Handler\ubcc4 \uc5d0\ub7ec RPS",
       "type": "timeseries"
     },
     {
@@ -639,11 +639,11 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "## ⏱️ AI 추론 응답시간",
+        "content": "## \u23f1\ufe0f AI \ucd94\ub860 \uc751\ub2f5\uc2dc\uac04",
         "mode": "markdown"
       },
       "pluginVersion": "12.4.0",
-      "title": "── AI 추론 응답시간 ──",
+      "title": "\u2500\u2500 AI \ucd94\ub860 \uc751\ub2f5\uc2dc\uac04 \u2500\u2500",
       "type": "text"
     },
     {
@@ -731,12 +731,12 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "sum by(handler)(rate(http_request_duration_seconds_sum{environment=\"$environment\", role=\"$role\", application=\"$application\", instance=~\"$instance\"}[1m])) / sum by(handler)(rate(http_request_duration_seconds_count{environment=\"$environment\", role=\"$role\", application=\"$application\", instance=~\"$instance\"}[1m]))",
+          "expr": "sum by(handler)(rate(http_request_duration_seconds_sum{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])) / sum by(handler)(rate(http_request_duration_seconds_count{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m]))",
           "legendFormat": "avg - {{handler}}",
           "refId": "A"
         }
       ],
-      "title": "Handler별 평균 응답시간",
+      "title": "Handler\ubcc4 \ud3c9\uade0 \uc751\ub2f5\uc2dc\uac04",
       "type": "timeseries"
     },
     {
@@ -824,22 +824,22 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "histogram_quantile(0.50, sum by(le)(rate(http_request_duration_highr_seconds_bucket{environment=\"$environment\", role=\"$role\", application=\"$application\", instance=~\"$instance\"}[1m])))",
+          "expr": "histogram_quantile(0.50, sum by(le)(rate(http_request_duration_highr_seconds_bucket{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])))",
           "legendFormat": "P50",
           "refId": "A"
         },
         {
-          "expr": "histogram_quantile(0.95, sum by(le)(rate(http_request_duration_highr_seconds_bucket{environment=\"$environment\", role=\"$role\", application=\"$application\", instance=~\"$instance\"}[1m])))",
+          "expr": "histogram_quantile(0.95, sum by(le)(rate(http_request_duration_highr_seconds_bucket{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])))",
           "legendFormat": "P95",
           "refId": "B"
         },
         {
-          "expr": "histogram_quantile(0.99, sum by(le)(rate(http_request_duration_highr_seconds_bucket{environment=\"$environment\", role=\"$role\", application=\"$application\", instance=~\"$instance\"}[1m])))",
+          "expr": "histogram_quantile(0.99, sum by(le)(rate(http_request_duration_highr_seconds_bucket{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])))",
           "legendFormat": "P99",
           "refId": "C"
         }
       ],
-      "title": "전체 P50 / P95 / P99 응답시간",
+      "title": "\uc804\uccb4 P50 / P95 / P99 \uc751\ub2f5\uc2dc\uac04",
       "type": "timeseries"
     },
     {
@@ -927,12 +927,12 @@
       "pluginVersion": "12.4.0",
       "targets": [
         {
-          "expr": "histogram_quantile(0.99, sum by(handler, le)(rate(http_request_duration_seconds_bucket{environment=\"$environment\", role=\"$role\", application=\"$application\", instance=~\"$instance\"}[1m])))",
+          "expr": "histogram_quantile(0.99, sum by(handler, le)(rate(http_request_duration_seconds_bucket{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])))",
           "legendFormat": "P99 - {{handler}}",
           "refId": "A"
         }
       ],
-      "title": "Handler별 최대 응답시간",
+      "title": "Handler\ubcc4 \ucd5c\ub300 \uc751\ub2f5\uc2dc\uac04",
       "type": "timeseries"
     },
     {
@@ -953,11 +953,11 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "## 🖥️ System",
+        "content": "## \ud83d\udda5\ufe0f System",
         "mode": "markdown"
       },
       "pluginVersion": "12.4.0",
-      "title": "── SYSTEM ──",
+      "title": "\u2500\u2500 SYSTEM \u2500\u2500",
       "type": "text"
     },
     {
@@ -991,12 +991,12 @@
       },
       "targets": [
         {
-          "expr": "avg by(instance)(1 - avg by(instance)(rate(node_cpu_seconds_total{environment=\"$environment\", role=\"$role\", instance=~\"$instance\", mode=\"idle\"}[1m])))",
+          "expr": "avg by(instance)(1 - avg by(instance)(rate(node_cpu_seconds_total{environment=\"$environment\", instance=~\"$instance\", mode=\"idle\"}[1m])))",
           "legendFormat": "{{instance}}",
           "refId": "A"
         }
       ],
-      "title": "CPU 사용률",
+      "title": "CPU \uc0ac\uc6a9\ub960",
       "type": "timeseries"
     },
     {
@@ -1028,17 +1028,17 @@
       },
       "targets": [
         {
-          "expr": "node_memory_MemTotal_bytes{environment=\"$environment\", role=\"$role\", instance=~\"$instance\"} - node_memory_MemAvailable_bytes{environment=\"$environment\", role=\"$role\", instance=~\"$instance\"}",
+          "expr": "node_memory_MemTotal_bytes{environment=\"$environment\", instance=~\"$instance\"} - node_memory_MemAvailable_bytes{environment=\"$environment\", instance=~\"$instance\"}",
           "legendFormat": "Used - {{instance}}",
           "refId": "A"
         },
         {
-          "expr": "node_memory_MemTotal_bytes{environment=\"$environment\", role=\"$role\", instance=~\"$instance\"}",
+          "expr": "node_memory_MemTotal_bytes{environment=\"$environment\", instance=~\"$instance\"}",
           "legendFormat": "Total - {{instance}}",
           "refId": "B"
         }
       ],
-      "title": "메모리 사용량",
+      "title": "\uba54\ubaa8\ub9ac \uc0ac\uc6a9\ub7c9",
       "type": "timeseries"
     },
     {
@@ -1070,17 +1070,17 @@
       },
       "targets": [
         {
-          "expr": "rate(node_disk_read_bytes_total{environment=\"$environment\", role=\"$role\", instance=~\"$instance\", device=\"nvme0n1\"}[1m])",
+          "expr": "rate(node_disk_read_bytes_total{environment=\"$environment\", instance=~\"$instance\", device=\"nvme0n1\"}[1m])",
           "legendFormat": "Read - {{instance}}",
           "refId": "A"
         },
         {
-          "expr": "rate(node_disk_written_bytes_total{environment=\"$environment\", role=\"$role\", instance=~\"$instance\", device=\"nvme0n1\"}[1m])",
+          "expr": "rate(node_disk_written_bytes_total{environment=\"$environment\", instance=~\"$instance\", device=\"nvme0n1\"}[1m])",
           "legendFormat": "Write - {{instance}}",
           "refId": "B"
         }
       ],
-      "title": "디스크 I/O",
+      "title": "\ub514\uc2a4\ud06c I/O",
       "type": "timeseries"
     },
     {
@@ -1096,10 +1096,10 @@
       },
       "id": 30,
       "options": {
-        "content": "## 🐍 Python Process",
+        "content": "## \ud83d\udc0d Python Process",
         "mode": "markdown"
       },
-      "title": "── Python Process ──",
+      "title": "\u2500\u2500 Python Process \u2500\u2500",
       "type": "text"
     },
     {
@@ -1131,17 +1131,17 @@
       },
       "targets": [
         {
-          "expr": "process_resident_memory_bytes{environment=\"$environment\", role=\"$role\", application=\"$application\", instance=~\"$instance\"}",
+          "expr": "process_resident_memory_bytes{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}",
           "legendFormat": "RSS - {{instance}}",
           "refId": "A"
         },
         {
-          "expr": "process_virtual_memory_bytes{environment=\"$environment\", role=\"$role\", application=\"$application\", instance=~\"$instance\"}",
+          "expr": "process_virtual_memory_bytes{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}",
           "legendFormat": "Virtual - {{instance}}",
           "refId": "B"
         }
       ],
-      "title": "Python 메모리 (RSS / Virtual)",
+      "title": "Python \uba54\ubaa8\ub9ac (RSS / Virtual)",
       "type": "timeseries"
     },
     {
@@ -1173,12 +1173,12 @@
       },
       "targets": [
         {
-          "expr": "rate(process_cpu_seconds_total{environment=\"$environment\", role=\"$role\", application=\"$application\", instance=~\"$instance\"}[1m])",
+          "expr": "rate(process_cpu_seconds_total{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])",
           "legendFormat": "CPU - {{instance}}",
           "refId": "A"
         }
       ],
-      "title": "Python CPU 사용",
+      "title": "Python CPU \uc0ac\uc6a9",
       "type": "timeseries"
     },
     {
@@ -1194,10 +1194,10 @@
       },
       "id": 33,
       "options": {
-        "content": "## 🗑️ Python GC",
+        "content": "## \ud83d\uddd1\ufe0f Python GC",
         "mode": "markdown"
       },
-      "title": "── Python GC ──",
+      "title": "\u2500\u2500 Python GC \u2500\u2500",
       "type": "text"
     },
     {
@@ -1229,12 +1229,12 @@
       },
       "targets": [
         {
-          "expr": "rate(python_gc_collections_total{environment=\"$environment\", role=\"$role\", application=\"$application\", instance=~\"$instance\"}[1m])",
+          "expr": "rate(python_gc_collections_total{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])",
           "legendFormat": "gen{{generation}} - {{instance}}",
           "refId": "A"
         }
       ],
-      "title": "GC 수집 횟수 (generation별)",
+      "title": "GC \uc218\uc9d1 \ud69f\uc218 (generation\ubcc4)",
       "type": "timeseries"
     },
     {
@@ -1266,17 +1266,17 @@
       },
       "targets": [
         {
-          "expr": "rate(python_gc_objects_collected_total{environment=\"$environment\", role=\"$role\", application=\"$application\", instance=~\"$instance\"}[1m])",
+          "expr": "rate(python_gc_objects_collected_total{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])",
           "legendFormat": "collected gen{{generation}} - {{instance}}",
           "refId": "A"
         },
         {
-          "expr": "rate(python_gc_objects_uncollectable_total{environment=\"$environment\", role=\"$role\", application=\"$application\", instance=~\"$instance\"}[1m])",
+          "expr": "rate(python_gc_objects_uncollectable_total{environment=\"$environment\", application=\"$application\", instance=~\"$instance\"}[1m])",
           "legendFormat": "uncollectable gen{{generation}} - {{instance}}",
           "refId": "B"
         }
       ],
-      "title": "GC 수집 객체 수",
+      "title": "GC \uc218\uc9d1 \uac1d\uccb4 \uc218",
       "type": "timeseries"
     }
   ],
@@ -1301,25 +1301,12 @@
         "name": "environment",
         "options": [],
         "query": {
-          "query": "label_values(http_requests_total{role=\"ai\"}, environment)",
+          "query": "label_values(http_requests_total{}, environment)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
         "regexApplyTo": "value",
         "type": "query"
-      },
-      {
-        "current": {
-          "text": "ai",
-          "value": "ai"
-        },
-        "hide": 2,
-        "label": "Role",
-        "name": "role",
-        "options": [],
-        "query": "ai",
-        "type": "custom",
-        "valuesFormat": "csv"
       },
       {
         "current": {
@@ -1336,7 +1323,7 @@
         "name": "application",
         "options": [],
         "query": {
-          "query": "label_values(http_requests_total{role=\"ai\", environment=\"$environment\"}, application)",
+          "query": "label_values(http_requests_total{environment=\"$environment\"}, application)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
@@ -1360,7 +1347,7 @@
         "options": [],
         "query": {
           "qryType": 1,
-          "query": "label_values(up{role=\"ai\", environment=\"$environment\", application=\"$application\", job=\"fastapi\"},instance)",
+          "query": "label_values(up{environment=\"$environment\", application=\"$application\", job=\"prometheus.scrape.pods\"},instance)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 2,
