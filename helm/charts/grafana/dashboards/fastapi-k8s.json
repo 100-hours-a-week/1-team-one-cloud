@@ -776,23 +776,6 @@
       "valueName": "current"
     },
     {
-      "collapsed": false,
-      "datasource": {
-        "uid": "Prometheus",
-        "type": "prometheus"
-      },
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 4
-      },
-      "id": 31,
-      "panels": [],
-      "title": "Performance",
-      "type": "row"
-    },
-    {
       "cacheTimeout": null,
       "colorBackground": false,
       "colorValue": true,
@@ -2464,23 +2447,6 @@
         }
       ],
       "valueName": "current"
-    },
-    {
-      "collapsed": false,
-      "datasource": {
-        "uid": "Prometheus",
-        "type": "prometheus"
-      },
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 26
-      },
-      "id": 29,
-      "panels": [],
-      "title": "Problems",
-      "type": "row"
     }
   ],
   "refresh": "1m",
@@ -2576,7 +2542,7 @@
     ]
   },
   "timezone": "",
-  "title": "Zabbix-Linux-Infrastructure",
+  "title": "FastAPI Application Dashboard",
   "uid": "41URQF7mz",
   "version": 5
 }

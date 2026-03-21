@@ -3297,7 +3297,7 @@
     ]
   },
   "timezone": "",
-  "title": "Spring Boot 3.x Statistics",
+  "title": "Spring Boot Monitoring K8s",
   "uid": "spring_boot_21",
   "version": 75,
   "weekStart": ""
