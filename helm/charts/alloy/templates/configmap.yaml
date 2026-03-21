@@ -4,12 +4,41 @@ metadata:
   name: {{ .Chart.Name }}-config
 data:
   config.alloy: |
-    // --- 로그 수집 ---
-    local.file_match "pods" {
-      path_targets = [{ "__address__" = "localhost", "__path__" = "/var/log/containers/*.log" }]
+    // --- 로그 수집 (K8s 메타데이터 연동) ---
+    discovery.relabel "pod_logs" {
+      targets = discovery.kubernetes.pods.targets
+
+      rule {
+        source_labels = ["__meta_kubernetes_pod_node_name"]
+        regex         = "^" + sys.env("NODE_NAME") + "$"
+        action        = "keep"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_name", "__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
+        action = "replace"
+        separator = "/"
+        replacement = "/var/log/pods/$1_$2_$3/$4/*.log"
+        target_label = "__path__"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        target_label  = "namespace"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_pod_name"]
+        target_label  = "pod"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_pod_label_app"]
+        target_label  = "application"
+      }
     }
-    loki.source.file "pods" {
-      targets = local.file_match.pods.targets
+
+    local.file_match "pod_logs" {
+      targets = discovery.relabel.pod_logs.output
+    }
+    loki.source.file "pod_logs" {
+      targets = local.file_match.pod_logs.targets
       forward_to = [loki.write.default.receiver]
     }
     loki.write "default" {
@@ -34,6 +63,15 @@ data:
     prometheus.scrape "kubelet" {
       targets = discovery.relabel.node_labels.output
       scheme = "https"
+      tls_config { insecure_skip_verify = true }
+      bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+      forward_to = [prometheus.remote_write.default.receiver]
+    }
+
+    prometheus.scrape "cadvisor" {
+      targets = discovery.relabel.node_labels.output
+      scheme = "https"
+      metrics_path = "/metrics/cadvisor"
       tls_config { insecure_skip_verify = true }
       bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
       forward_to = [prometheus.remote_write.default.receiver]

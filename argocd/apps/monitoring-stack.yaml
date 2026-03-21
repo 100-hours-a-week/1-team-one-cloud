@@ -95,6 +95,9 @@ spec:
         customAnnotations:
           prometheus.io/scrape: "true"
           prometheus.io/port: "8080"
+        podAnnotations:
+          prometheus.io/scrape: "true"
+          prometheus.io/port: "8080"
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
