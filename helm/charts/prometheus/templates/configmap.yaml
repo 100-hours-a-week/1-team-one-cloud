@@ -32,7 +32,7 @@ data:
         interval: 30s
         rules:
           - alert: BackendDeploymentDown
-            expr: kube_deployment_status_replicas_available{namespace="production", deployment="spring-boot-app"} == 0
+            expr: kube_deployment_status_replicas_available{exported_namespace="prod-app", deployment="backend"} == 0
             for: 1m
             labels:
               severity: critical
@@ -45,12 +45,12 @@ data:
           - alert: BackendCriticalErrorRate
             expr: |
               (
-                sum(rate(http_server_requests_seconds_count{namespace="production", app="spring-boot", outcome="SERVER_ERROR"}[1m]))
+                sum(rate(http_server_requests_seconds_count{namespace="prod-app", application="backend", outcome="SERVER_ERROR"}[1m]))
                 /
-                sum(rate(http_server_requests_seconds_count{namespace="production", app="spring-boot"}[1m]))
+                sum(rate(http_server_requests_seconds_count{namespace="prod-app", application="backend"}[1m]))
               ) * 100 > 20
               and
-              sum(rate(http_server_requests_seconds_count{namespace="production", app="spring-boot"}[1m])) > 1
+              sum(rate(http_server_requests_seconds_count{namespace="prod-app", application="backend"}[1m])) > 1
             for: 1m
             labels:
               severity: critical
@@ -63,7 +63,7 @@ data:
           - alert: BackendSlowResponseP95
             expr: |
               histogram_quantile(0.95, 
-                sum by (le) (rate(http_server_requests_seconds_bucket{namespace="production", app="spring-boot", uri!~"/api/actuator.*"}[1m]))
+                sum by (le) (rate(http_server_requests_seconds_bucket{namespace="prod-app", application="backend", uri!~"/api/actuator.*"}[1m]))
               ) > 1.0
             for: 2m
             labels:
@@ -75,7 +75,7 @@ data:
               description: "2분간 P95 응답시간이 1초 이상입니다. (현재: {{ $value }}s)"
 
           - alert: DBConnectionPoolPending
-            expr: sum by (pod) (hikaricp_connections_pending{namespace="production", app="spring-boot"}) > 5
+            expr: sum by (pod) (hikaricp_connections_pending{namespace="prod-app", application="backend"}) > 5
             for: 1m
             labels:
               severity: high
@@ -88,9 +88,9 @@ data:
           - alert: BackendHeapCritical
             expr: |
               (
-                sum by (pod) (jvm_memory_used_bytes{namespace="production", app="spring-boot", area="heap"})
+                sum by (pod) (jvm_memory_used_bytes{namespace="prod-app", application="backend", area="heap"})
                 /
-                sum by (pod) (jvm_memory_max_bytes{namespace="production", app="spring-boot", area="heap"})
+                sum by (pod) (jvm_memory_max_bytes{namespace="prod-app", application="backend", area="heap"})
               ) * 100 > 85
             for: 2m
             labels:
@@ -105,7 +105,7 @@ data:
         interval: 30s
         rules:
           - alert: AIDeploymentDown
-            expr: kube_deployment_status_replicas_available{namespace="production", deployment="fastapi-app"} == 0
+            expr: kube_deployment_status_replicas_available{exported_namespace="prod-app", deployment="ai-server"} == 0
             for: 1m
             labels:
               severity: critical
@@ -118,12 +118,12 @@ data:
           - alert: AICriticalErrorRate
             expr: |
               (
-                sum(rate(http_requests_total{namespace="production", app="fastapi", status=~"5.."}[1m]))
+                sum(rate(http_requests_total{namespace="prod-app", application="ai-server", status=~"5.."}[1m]))
                 /
-                sum(rate(http_requests_total{namespace="production", app="fastapi"}[1m]))
+                sum(rate(http_requests_total{namespace="prod-app", application="ai-server"}[1m]))
               ) * 100 > 20
               and
-              sum(rate(http_requests_total{namespace="production", app="fastapi"}[1m])) > 1
+              sum(rate(http_requests_total{namespace="prod-app", application="ai-server"}[1m])) > 1
             for: 1m
             labels:
               severity: critical
@@ -184,7 +184,7 @@ data:
         interval: 30s
         rules:
           - alert: PodOOMKilled
-            expr: kube_pod_container_status_last_terminated_reason{reason="OOMKilled", namespace="production"} > 0
+            expr: kube_pod_container_status_last_terminated_reason{reason="OOMKilled", exported_namespace="prod-app"} > 0
             for: 1m
             labels:
               severity: critical
@@ -194,7 +194,7 @@ data:
               description: "파드 {{ $labels.pod }} (컨테이너: {{ $labels.container }})가 메모리 한도 초과(OOM)로 강제 종료되었습니다. 메모리 Limit 설정을 확인하세요."
 
           - alert: PodCrashLoopBackOff
-            expr: rate(kube_pod_container_status_restarts_total{namespace="production"}[5m]) * 300 > 3
+            expr: rate(kube_pod_container_status_restarts_total{exported_namespace="prod-app"}[5m]) * 300 > 3
             for: 2m
             labels:
               severity: high
@@ -205,9 +205,9 @@ data:
 
           - alert: ContainerCPUThrottlingHigh
             expr: |
-              sum by (pod, container) (rate(container_cpu_throttled_seconds_total{namespace="production"}[5m]))
+              sum by (pod, container) (rate(container_cpu_throttled_seconds_total{namespace="prod-app"}[5m]))
               /
-              sum by (pod, container) (rate(container_cpu_usage_seconds_total{namespace="production"}[5m])) * 100 > 30
+              sum by (pod, container) (rate(container_cpu_usage_seconds_total{namespace="prod-app"}[5m])) * 100 > 30
             for: 5m
             labels:
               severity: warning

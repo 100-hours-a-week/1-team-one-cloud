@@ -47,13 +47,13 @@
           "type": "prometheus",
           "uid": "Prometheus"
         },
-        "definition": "label_values(http_requests_total{namespace=\"$namespace\"}, application)",
+        "definition": "label_values(up{namespace=\"$namespace\"}, application)",
         "includeAll": false,
         "label": "Application",
         "name": "application",
         "options": [],
         "query": {
-          "query": "label_values(http_requests_total{namespace=\"$namespace\"}, application)",
+          "query": "label_values(up{namespace=\"$namespace\"}, application)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
@@ -357,7 +357,7 @@
       },
       "targets": [
         {
-          "expr": "increase(kube_pod_container_status_restarts_total{namespace=~\"$namespace\"}[1h])",
+          "expr": "increase(kube_pod_container_status_restarts_total{exported_namespace=~\"$namespace\"}[1h])",
           "legendFormat": "{{pod}}",
           "refId": "A"
         }
@@ -411,7 +411,7 @@
       },
       "targets": [
         {
-          "expr": "kube_pod_container_status_last_terminated_reason{reason=\"OOMKilled\", namespace=~\"$namespace\"}",
+          "expr": "kube_pod_container_status_last_terminated_reason{reason=\"OOMKilled\", exported_namespace=~\"$namespace\"}",
           "legendFormat": "{{pod}}",
           "refId": "A"
         }

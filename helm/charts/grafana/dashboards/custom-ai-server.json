@@ -1100,13 +1100,13 @@
           "type": "prometheus",
           "uid": "Prometheus"
         },
-        "definition": "label_values(http_requests_total{namespace=\"$namespace\"}, application)",
+        "definition": "label_values(up{namespace=\"$namespace\"}, application)",
         "includeAll": false,
         "label": "Application",
         "name": "application",
         "options": [],
         "query": {
-          "query": "label_values(http_requests_total{namespace=\"$namespace\"}, application)",
+          "query": "label_values(up{namespace=\"$namespace\"}, application)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,

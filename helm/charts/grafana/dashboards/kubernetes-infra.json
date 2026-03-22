@@ -56,7 +56,7 @@
       },
       "targets": [
         {
-          "expr": "increase(kube_pod_container_status_restarts_total{namespace=~\"$namespace\"}[1h])",
+          "expr": "increase(kube_pod_container_status_restarts_total{exported_namespace=~\"$namespace\"}[1h])",
           "legendFormat": "{{pod}}",
           "refId": "A"
         }
@@ -110,7 +110,7 @@
       },
       "targets": [
         {
-          "expr": "kube_pod_container_status_last_terminated_reason{reason=\"OOMKilled\", namespace=~\"$namespace\"}",
+          "expr": "kube_pod_container_status_last_terminated_reason{reason=\"OOMKilled\", exported_namespace=~\"$namespace\"}",
           "legendFormat": "{{pod}}",
           "refId": "A"
         }
