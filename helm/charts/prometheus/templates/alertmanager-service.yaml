@@ -1,0 +1,15 @@
+{{- if .Values.alertmanager.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-alertmanager
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9093
+      targetPort: 9093
+      protocol: TCP
+      name: web
+  selector:
+    app: {{ .Chart.Name }}-alertmanager
+{{- end }}

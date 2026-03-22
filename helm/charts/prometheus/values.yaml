@@ -20,3 +20,11 @@ tolerations:
     operator: "Equal"
     value: "monitoring"
     effect: "NoSchedule"
+
+alertmanager:
+  enabled: true
+  discordWebhook: "https://discord.com/api/webhooks/1466280575928369162/4E0dg1WzpNrVu4RIK2WJYcSAgaXF8Y37_4jSCWp4QMDasOpfFG8sXFe7KE0NFARCGJNG"
+  image:
+    repository: prom/alertmanager
+    tag: v0.27.0
+    pullPolicy: IfNotPresent

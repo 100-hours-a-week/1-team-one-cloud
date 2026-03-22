@@ -13,7 +13,215 @@ data:
       tsdb:
         out_of_order_time_window: 30m
 
+    rule_files:
+      - '/etc/prometheus/prometheus-rules.yml'
+
+    alerting:
+      alertmanagers:
+        - static_configs:
+            - targets: ['{{ .Chart.Name }}-alertmanager:9093']
+
     scrape_configs:
       - job_name: 'prometheus'
         static_configs:
           - targets: ['localhost:9090']
+
+  prometheus-rules.yml: |
+    groups:
+      - name: backend_alerts
+        interval: 30s
+        rules:
+          - alert: BackendDeploymentDown
+            expr: kube_deployment_status_replicas_available{namespace="production", deployment="spring-boot-app"} == 0
+            for: 1m
+            labels:
+              severity: critical
+              service: backend
+              environment: production
+            annotations:
+              summary: "Backend Deployment Down"
+              description: "프로덕션 백엔드(Spring Boot) 파드가 1분간 1개도 서비스 가능한 상태가 아닙니다."
+
+          - alert: BackendCriticalErrorRate
+            expr: |
+              (
+                sum(rate(http_server_requests_seconds_count{namespace="production", app="spring-boot", outcome="SERVER_ERROR"}[1m]))
+                /
+                sum(rate(http_server_requests_seconds_count{namespace="production", app="spring-boot"}[1m]))
+              ) * 100 > 20
+              and
+              sum(rate(http_server_requests_seconds_count{namespace="production", app="spring-boot"}[1m])) > 1
+            for: 1m
+            labels:
+              severity: critical
+              service: backend
+              environment: production
+            annotations:
+              summary: "Backend 5xx Error Rate Critical"
+              description: "1분간 5xx 에러율이 20% 이상입니다. (현재: {{ $value }}%)"
+
+          - alert: BackendSlowResponseP95
+            expr: |
+              histogram_quantile(0.95, 
+                sum by (le) (rate(http_server_requests_seconds_bucket{namespace="production", app="spring-boot", uri!~"/api/actuator.*"}[1m]))
+              ) > 1.0
+            for: 2m
+            labels:
+              severity: high
+              service: backend
+              environment: production
+            annotations:
+              summary: "Backend Slow Response P95"
+              description: "2분간 P95 응답시간이 1초 이상입니다. (현재: {{ $value }}s)"
+
+          - alert: DBConnectionPoolPending
+            expr: sum by (pod) (hikaricp_connections_pending{namespace="production", app="spring-boot"}) > 5
+            for: 1m
+            labels:
+              severity: high
+              service: backend
+              environment: production
+            annotations:
+              summary: "DB Connection Pool Bottleneck"
+              description: "{{ $labels.pod }}에서 DB 커넥션 대기 스레드가 5개 이상입니다. (현재: {{ $value }})"
+
+          - alert: BackendHeapCritical
+            expr: |
+              (
+                sum by (pod) (jvm_memory_used_bytes{namespace="production", app="spring-boot", area="heap"})
+                /
+                sum by (pod) (jvm_memory_max_bytes{namespace="production", app="spring-boot", area="heap"})
+              ) * 100 > 85
+            for: 2m
+            labels:
+              severity: high
+              service: backend
+              environment: production
+            annotations:
+              summary: "Backend JVM Heap Critical"
+              description: "{{ $labels.pod }}의 JVM Heap 사용률이 85% 이상입니다. (현재: {{ $value }}%)"
+
+      - name: ai_alerts
+        interval: 30s
+        rules:
+          - alert: AIDeploymentDown
+            expr: kube_deployment_status_replicas_available{namespace="production", deployment="fastapi-app"} == 0
+            for: 1m
+            labels:
+              severity: critical
+              service: ai
+              environment: production
+            annotations:
+              summary: "AI Server Deployment Down"
+              description: "프로덕션 AI 서버(FastAPI) 파드가 1분간 1개도 살아있지 않습니다."
+
+          - alert: AICriticalErrorRate
+            expr: |
+              (
+                sum(rate(http_requests_total{namespace="production", app="fastapi", status=~"5.."}[1m]))
+                /
+                sum(rate(http_requests_total{namespace="production", app="fastapi"}[1m]))
+              ) * 100 > 20
+              and
+              sum(rate(http_requests_total{namespace="production", app="fastapi"}[1m])) > 1
+            for: 1m
+            labels:
+              severity: critical
+              service: ai
+              environment: production
+            annotations:
+              summary: "AI Server 5xx Error Rate Critical"
+              description: "AI 서버 1분간 5xx 에러율이 20% 이상입니다. (현재: {{ $value }}%)"
+
+      - name: infrastructure_alerts
+        interval: 30s
+        rules:
+          - alert: NodeCPUCritical
+            expr: |
+              100 * (1 - avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[2m]))) > 85
+            for: 5m
+            labels:
+              severity: critical
+              service: infrastructure
+              environment: production
+            annotations:
+              summary: "Node CPU Critical"
+              description: "노드 {{ $labels.instance }}의 CPU 사용률이 5분간 85% 이상입니다. (현재: {{ $value }}%)"
+
+          - alert: NodeMemoryCritical
+            expr: |
+              (
+                node_memory_MemAvailable_bytes 
+                / 
+                node_memory_MemTotal_bytes
+              ) < 0.15
+            for: 2m
+            labels:
+              severity: critical
+              service: infrastructure
+              environment: production
+            annotations:
+              summary: "Node Memory Critical"
+              description: "노드 {{ $labels.instance }}의 가용 메모리가 15% 미만입니다. Pod Eviction 위험이 있습니다."
+
+          - alert: NodeDiskCritical
+            expr: |
+              (
+                node_filesystem_avail_bytes{mountpoint="/", fstype!="rootfs"} 
+                / 
+                node_filesystem_size_bytes{mountpoint="/", fstype!="rootfs"}
+              ) < 0.20
+            for: 5m
+            labels:
+              severity: critical
+              service: infrastructure
+              environment: production
+            annotations:
+              summary: "Node Disk Space Critical"
+              description: "노드 {{ $labels.instance }}의 루트 디스크 가용 공간이 20% 미만입니다."
+
+      - name: kubernetes_specific_alerts
+        interval: 30s
+        rules:
+          - alert: PodOOMKilled
+            expr: kube_pod_container_status_last_terminated_reason{reason="OOMKilled", namespace="production"} > 0
+            for: 1m
+            labels:
+              severity: critical
+              service: kubernetes
+            annotations:
+              summary: "Pod OOMKilled"
+              description: "파드 {{ $labels.pod }} (컨테이너: {{ $labels.container }})가 메모리 한도 초과(OOM)로 강제 종료되었습니다. 메모리 Limit 설정을 확인하세요."
+
+          - alert: PodCrashLoopBackOff
+            expr: rate(kube_pod_container_status_restarts_total{namespace="production"}[5m]) * 300 > 3
+            for: 2m
+            labels:
+              severity: high
+              service: kubernetes
+            annotations:
+              summary: "Pod CrashLoopBackOff"
+              description: "파드 {{ $labels.pod }}가 5분 내 3회 이상 구동에 실패하며 재시작되고 있습니다. 로그를 확인하세요."
+
+          - alert: ContainerCPUThrottlingHigh
+            expr: |
+              sum by (pod, container) (rate(container_cpu_throttled_seconds_total{namespace="production"}[5m]))
+              /
+              sum by (pod, container) (rate(container_cpu_usage_seconds_total{namespace="production"}[5m])) * 100 > 30
+            for: 5m
+            labels:
+              severity: warning
+              service: kubernetes
+            annotations:
+              summary: "Container CPU Throttling High"
+              description: "파드 {{ $labels.pod }} (컨테이너: {{ $labels.container }})의 CPU 스로틀링 비율이 30%를 초과했습니다. 응답 지연의 원인이 될 수 있으니 CPU Limit을 점검하세요. (현재: {{ $value }}%)"
+
+          - alert: KubernetesNodeNotReady
+            expr: kube_node_status_condition{condition="Ready", status="true"} == 0
+            for: 3m
+            labels:
+              severity: critical
+              service: kubernetes
+            annotations:
+              summary: "Kubernetes Node Not Ready"
+              description: "노드 {{ $labels.node }}가 3분 이상 Ready 상태가 아닙니다. 스케줄링 및 파드 동작에 문제가 발생할 수 있습니다."

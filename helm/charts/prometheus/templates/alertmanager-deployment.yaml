@@ -1,0 +1,32 @@
+{{- if .Values.alertmanager.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-alertmanager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-alertmanager
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-alertmanager
+    spec:
+      containers:
+        - name: alertmanager
+          image: "{{ .Values.alertmanager.image.repository }}:{{ .Values.alertmanager.image.tag }}"
+          args:
+            - "--config.file=/etc/alertmanager/alertmanager.yml"
+            - "--storage.path=/alertmanager"
+          ports:
+            - containerPort: 9093
+              name: web
+          volumeMounts:
+            - name: config
+              mountPath: /etc/alertmanager
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Chart.Name }}-alertmanager-config
+{{- end }}
