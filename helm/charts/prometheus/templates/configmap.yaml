@@ -58,7 +58,7 @@ data:
               environment: production
             annotations:
               summary: "Backend 5xx Error Rate Critical"
-              description: "1분간 5xx 에러율이 20% 이상입니다. (현재: {{ $value }}%)"
+              description: "1분간 5xx 에러율이 20% 이상입니다. (현재: {{ \"{{\" }} $value {{ \"}}\" }}%)"
 
           - alert: BackendSlowResponseP95
             expr: |
@@ -72,7 +72,7 @@ data:
               environment: production
             annotations:
               summary: "Backend Slow Response P95"
-              description: "2분간 P95 응답시간이 1초 이상입니다. (현재: {{ $value }}s)"
+              description: "2분간 P95 응답시간이 1초 이상입니다. (현재: {{ \"{{\" }} $value {{ \"}}\" }}s)"
 
           - alert: DBConnectionPoolPending
             expr: sum by (pod) (hikaricp_connections_pending{namespace="prod-app", application="backend"}) > 5
@@ -83,7 +83,7 @@ data:
               environment: production
             annotations:
               summary: "DB Connection Pool Bottleneck"
-              description: "{{ $labels.pod }}에서 DB 커넥션 대기 스레드가 5개 이상입니다. (현재: {{ $value }})"
+              description: "{{ \"{{\" }} $labels.pod {{ \"}}\" }}에서 DB 커넥션 대기 스레드가 5개 이상입니다. (현재: {{ \"{{\" }} $value {{ \"}}\" }})"
 
           - alert: BackendHeapCritical
             expr: |
@@ -99,7 +99,7 @@ data:
               environment: production
             annotations:
               summary: "Backend JVM Heap Critical"
-              description: "{{ $labels.pod }}의 JVM Heap 사용률이 85% 이상입니다. (현재: {{ $value }}%)"
+              description: "{{ \"{{\" }} $labels.pod {{ \"}}\" }}의 JVM Heap 사용률이 85% 이상입니다. (현재: {{ \"{{\" }} $value {{ \"}}\" }}%)"
 
       - name: ai_alerts
         interval: 30s
@@ -131,7 +131,7 @@ data:
               environment: production
             annotations:
               summary: "AI Server 5xx Error Rate Critical"
-              description: "AI 서버 1분간 5xx 에러율이 20% 이상입니다. (현재: {{ $value }}%)"
+              description: "AI 서버 1분간 5xx 에러율이 20% 이상입니다. (현재: {{ \"{{\" }} $value {{ \"}}\" }}%)"
 
       - name: infrastructure_alerts
         interval: 30s
@@ -146,7 +146,7 @@ data:
               environment: production
             annotations:
               summary: "Node CPU Critical"
-              description: "노드 {{ $labels.instance }}의 CPU 사용률이 5분간 85% 이상입니다. (현재: {{ $value }}%)"
+              description: "노드 {{ \"{{\" }} $labels.instance {{ \"}}\" }}의 CPU 사용률이 5분간 85% 이상입니다. (현재: {{ \"{{\" }} $value {{ \"}}\" }}%)"
 
           - alert: NodeMemoryCritical
             expr: |
@@ -162,7 +162,7 @@ data:
               environment: production
             annotations:
               summary: "Node Memory Critical"
-              description: "노드 {{ $labels.instance }}의 가용 메모리가 15% 미만입니다. Pod Eviction 위험이 있습니다."
+              description: "노드 {{ \"{{\" }} $labels.instance {{ \"}}\" }}의 가용 메모리가 15% 미만입니다. Pod Eviction 위험이 있습니다."
 
           - alert: NodeDiskCritical
             expr: |
@@ -178,7 +178,7 @@ data:
               environment: production
             annotations:
               summary: "Node Disk Space Critical"
-              description: "노드 {{ $labels.instance }}의 루트 디스크 가용 공간이 20% 미만입니다."
+              description: "노드 {{ \"{{\" }} $labels.instance {{ \"}}\" }}의 루트 디스크 가용 공간이 20% 미만입니다."
 
       - name: kubernetes_specific_alerts
         interval: 30s
@@ -191,7 +191,7 @@ data:
               service: kubernetes
             annotations:
               summary: "Pod OOMKilled"
-              description: "파드 {{ $labels.pod }} (컨테이너: {{ $labels.container }})가 메모리 한도 초과(OOM)로 강제 종료되었습니다. 메모리 Limit 설정을 확인하세요."
+              description: "파드 {{ \"{{\" }} $labels.pod {{ \"}}\" }} (컨테이너: {{ \"{{\" }} $labels.container {{ \"}}\" }})가 메모리 한도 초과(OOM)로 강제 종료되었습니다. 메모리 Limit 설정을 확인하세요."
 
           - alert: PodCrashLoopBackOff
             expr: rate(kube_pod_container_status_restarts_total{exported_namespace="prod-app"}[5m]) * 300 > 3
@@ -201,7 +201,7 @@ data:
               service: kubernetes
             annotations:
               summary: "Pod CrashLoopBackOff"
-              description: "파드 {{ $labels.pod }}가 5분 내 3회 이상 구동에 실패하며 재시작되고 있습니다. 로그를 확인하세요."
+              description: "파드 {{ \"{{\" }} $labels.pod {{ \"}}\" }}가 5분 내 3회 이상 구동에 실패하며 재시작되고 있습니다. 로그를 확인하세요."
 
           - alert: ContainerCPUThrottlingHigh
             expr: |
@@ -214,7 +214,7 @@ data:
               service: kubernetes
             annotations:
               summary: "Container CPU Throttling High"
-              description: "파드 {{ $labels.pod }} (컨테이너: {{ $labels.container }})의 CPU 스로틀링 비율이 30%를 초과했습니다. 응답 지연의 원인이 될 수 있으니 CPU Limit을 점검하세요. (현재: {{ $value }}%)"
+              description: "파드 {{ \"{{\" }} $labels.pod {{ \"}}\" }} (컨테이너: {{ \"{{\" }} $labels.container {{ \"}}\" }})의 CPU 스로틀링 비율이 30%를 초과했습니다. 응답 지연의 원인이 될 수 있으니 CPU Limit을 점검하세요. (현재: {{ \"{{\" }} $value {{ \"}}\" }}%)"
 
           - alert: KubernetesNodeNotReady
             expr: kube_node_status_condition{condition="Ready", status="true"} == 0
@@ -224,4 +224,4 @@ data:
               service: kubernetes
             annotations:
               summary: "Kubernetes Node Not Ready"
-              description: "노드 {{ $labels.node }}가 3분 이상 Ready 상태가 아닙니다. 스케줄링 및 파드 동작에 문제가 발생할 수 있습니다."
+              description: "노드 {{ \"{{\" }} $labels.node {{ \"}}\" }}가 3분 이상 Ready 상태가 아닙니다. 스케줄링 및 파드 동작에 문제가 발생할 수 있습니다."
