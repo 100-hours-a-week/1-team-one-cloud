@@ -63,6 +63,7 @@ data:
     
     prometheus.scrape "kubelet" {
       targets = discovery.relabel.node_labels.output
+      scrape_interval = "15s"
       scheme = "https"
       tls_config { insecure_skip_verify = true }
       bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
@@ -71,6 +72,7 @@ data:
 
     prometheus.scrape "cadvisor" {
       targets = discovery.relabel.node_labels.output
+      scrape_interval = "15s"
       scheme = "https"
       metrics_path = "/metrics/cadvisor"
       tls_config { insecure_skip_verify = true }
@@ -139,6 +141,7 @@ data:
 
     prometheus.scrape "pods" {
       targets = discovery.relabel.pod_labels.output
+      scrape_interval = "15s"
       forward_to = [prometheus.remote_write.default.receiver]
     }
 
@@ -148,6 +151,7 @@ data:
         { "__address__" = sys.env("DEV_DB_IP") + ":9104", "namespace" = "dev-app", "application" = "mysql" },
         { "__address__" = "mysql-exporter-rds.monitoring.svc:9104", "namespace" = "prod-app", "application" = "mysql" },
       ]
+      scrape_interval = "15s"
       forward_to = [prometheus.remote_write.default.receiver]
       clustering { enabled = true }
     }
@@ -158,6 +162,7 @@ data:
         { "__address__" = sys.env("DEV_REDIS_IP") + ":9121", "namespace" = "dev-app", "application" = "redis" },
         { "__address__" = sys.env("PROD_REDIS_IP") + ":9121", "namespace" = "prod-app", "application" = "redis" },
       ]
+      scrape_interval = "15s"
       forward_to = [prometheus.remote_write.default.receiver]
       clustering { enabled = true }
     }

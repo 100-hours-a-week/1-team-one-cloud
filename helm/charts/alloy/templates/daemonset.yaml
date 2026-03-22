@@ -49,8 +49,8 @@ spec:
             - --storage.path=/var/lib/alloy/data
             - --server.http.listen-addr=0.0.0.0:12345
             - --cluster.enabled=true
-            - --cluster.join-addresses=alloy.monitoring.svc.cluster.local
-            - --cluster.advertise-address=$(POD_IP):12345
+            - --cluster.join-addresses={{ .Chart.Name }}.monitoring.svc.cluster.local
+            - --cluster.advertise-address=$(POD_IP):7946
           ports:
             - containerPort: 12345
               name: http
