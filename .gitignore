@@ -33,3 +33,7 @@ terraform.rc
 .vscode/
 
 terraform-gcp/scripts/import.sh
+
+# Sensitive environment files
+.env
+.env.*
