@@ -32,6 +32,11 @@
    * **Default region name**: `ap-northeast-2`
    * **Default output format**: `json`
 
+   혹은 아래 명령어로 임시로 권한을 사용할 수 있다.
+   ```bash
+   aws login
+   ```
+
 ### 1단계. 테라폼 초기화 (Init)
 필요한 AWS 프로바이더 플러그인을 다운로드합니다.
 ```bash

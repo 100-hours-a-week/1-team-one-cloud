@@ -250,3 +250,10 @@ resource "aws_iam_role_policy_attachment" "s3_full_access" {
   role       = aws_iam_role.ssm_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
+
+# EC2 인스턴스의 IAM 역할에 ECR Read 권한 추가 부여 (프라이빗 ECR 이미지 Pull 기능 목적)
+resource "aws_iam_role_policy_attachment" "ecr_read_only" {
+  role       = aws_iam_role.ssm_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+}
+
